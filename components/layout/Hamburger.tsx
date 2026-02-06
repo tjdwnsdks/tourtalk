@@ -1,16 +1,15 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { Menu } from "lucide-react";
 import { useApp } from "@/contexts/AppContext";
-import { t, languageNames, languageFlags } from "@/lib/i18n";
-import type { LanguageCode } from "@/types";
+import { t } from "@/lib/i18n";
 
 export function Hamburger() {
   const [open, setOpen] = useState(false);
-  const { language, setLanguage } = useApp();
+  const { language } = useApp();
   const tr = t(language);
-  const langs: LanguageCode[] = ["ko", "en", "vi", "zh-CN", "zh-TW", "ja", "th", "id"];
 
   return (
     <div className="relative">
@@ -30,23 +29,13 @@ export function Hamburger() {
             onClick={() => setOpen(false)}
           />
           <div className="absolute left-0 top-full mt-1 z-20 w-56 rounded-xl border border-gray-200 bg-white shadow-lg py-2">
-            <div className="px-4 py-2 text-xs font-medium text-gray-500 uppercase tracking-wider">
-              {tr.menu.language}
-            </div>
-            {langs.map((lang) => (
-              <button
-                key={lang}
-                type="button"
-                onClick={() => {
-                  setLanguage(lang);
-                  setOpen(false);
-                }}
-                className="w-full px-4 py-2 text-left flex items-center gap-2 hover:bg-gray-50"
-              >
-                <span>{languageFlags[lang]}</span>
-                <span>{languageNames[lang]}</span>
-              </button>
-            ))}
+            <Link
+              href="/onboarding/emergency"
+              onClick={() => setOpen(false)}
+              className="block w-full px-4 py-2 text-left text-sm text-gray-800 hover:bg-gray-50"
+            >
+              긴급 연락망 설정
+            </Link>
             <div className="border-t border-gray-100 mt-2 pt-2 px-4 text-sm text-gray-500">
               {tr.menu.settings}
             </div>

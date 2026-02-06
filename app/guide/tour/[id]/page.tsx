@@ -1,11 +1,11 @@
 "use client";
 
 import { useParams, useRouter } from "next/navigation";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import toast from "react-hot-toast";
 import { useApp } from "@/contexts/AppContext";
-import { fakeTours, fakeParticipants, guideQuickMessages, fakeTranslate } from "@/lib/mockData";
+import { fakeTours, getParticipantsForTour, guideQuickMessages, fakeTranslate } from "@/lib/mockData";
 import { getRelativeTime } from "@/lib/utils";
 import type { Message } from "@/types";
 import type { LanguageCode } from "@/types";
@@ -27,22 +27,29 @@ export default function GuideTourManagePage() {
   const { language, tourMessages, addTourMessage, guideTours } = useApp();
   const tr = t(language).tourManage;
   const common = t(language).common;
+  const touristTr = t(language).tourist;
+  const emergencyTr = t(language).emergency;
   const [tab, setTab] = useState<Tab>("message");
   const [inputText, setInputText] = useState("");
   const [sending, setSending] = useState(false);
+  const [showPlayingPopup, setShowPlayingPopup] = useState(false);
+  const [playingDots, setPlayingDots] = useState(1);
+  const [showRecordingPopup, setShowRecordingPopup] = useState(false);
+  const [recordingDots, setRecordingDots] = useState(1);
 
   const allTours = [...guideTours, ...fakeTours];
   const tour = allTours.find((t) => t.id === id);
   const messages = (tourMessages[id] ?? []) as Message[];
+  const participantsForTour = getParticipantsForTour(id);
 
-  const byLang = fakeParticipants.reduce<Record<string, typeof fakeParticipants>>((acc, p) => {
+  const byLang = participantsForTour.reduce<Record<string, typeof participantsForTour>>((acc, p) => {
     const lang = p.language;
     if (!acc[lang]) acc[lang] = [];
     acc[lang].push(p);
     return acc;
   }, {});
 
-  const onlineCount = fakeParticipants.filter((p) => p.isOnline).length;
+  const onlineCount = participantsForTour.filter((p) => p.isOnline).length;
 
   const handleSendMessage = async (text: string) => {
     if (!text.trim() || sending) return;
@@ -74,6 +81,38 @@ export default function GuideTourManagePage() {
     handleSendMessage(msg);
   };
 
+  /** 받은 메시지 TTS 재생 (듣기) - 화면 중앙 정사각형 팝업 표시 (나가기 버튼으로만 닫기) */
+  const handleListen = (_text: string) => {
+    setPlayingDots(1);
+    setShowPlayingPopup(true);
+    // TODO: 실제 TTS API 연동 시 text로 음성 재생
+  };
+
+  /** 음성으로 안내하기 - 화면 중앙 '녹음중' 팝업 표시 (완료 버튼으로만 닫기) */
+  const handleVoiceGuide = () => {
+    setRecordingDots(1);
+    setShowRecordingPopup(true);
+    // TODO: 실제 녹음 API 연동
+  };
+
+  /** 재생 중 팝업 표시 중일 때 마침표 1 → 2 → 3 → 1 반복 애니메이션 */
+  useEffect(() => {
+    if (!showPlayingPopup) return;
+    const interval = setInterval(() => {
+      setPlayingDots((prev) => (prev >= 3 ? 1 : prev + 1));
+    }, 400);
+    return () => clearInterval(interval);
+  }, [showPlayingPopup]);
+
+  /** 녹음중 팝업 표시 중일 때 마침표 1 → 2 → 3 → 1 반복 애니메이션 */
+  useEffect(() => {
+    if (!showRecordingPopup) return;
+    const interval = setInterval(() => {
+      setRecordingDots((prev) => (prev >= 3 ? 1 : prev + 1));
+    }, 400);
+    return () => clearInterval(interval);
+  }, [showRecordingPopup]);
+
   if (!tour) {
     return (
       <>
@@ -88,6 +127,48 @@ export default function GuideTourManagePage() {
 
   return (
     <>
+      {/* 재생 중 팝업: 나가기 버튼 클릭 시에만 닫힘 */}
+      {showPlayingPopup && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30">
+          <div
+            className="w-[70%] max-w-[300px] aspect-square flex flex-col items-center justify-center gap-3 rounded-2xl bg-white shadow-xl p-4"
+          >
+            <span className="text-4xl" aria-hidden>🔊</span>
+            <p className="text-lg font-medium text-gray-800 min-w-[4em] text-center flex-1 flex items-center justify-center">
+              {common.playing.replace(/\.+$/, "")}
+              {".".repeat(playingDots)}
+            </p>
+            <Button
+              variant="primary"
+              className="w-full mt-auto"
+              onClick={() => setShowPlayingPopup(false)}
+            >
+              {common.exit}
+            </Button>
+          </div>
+        </div>
+      )}
+      {/* 녹음중 팝업: 완료 버튼 클릭 시에만 닫힘 */}
+      {showRecordingPopup && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30">
+          <div
+            className="w-[70%] max-w-[300px] aspect-square flex flex-col items-center justify-center gap-3 rounded-2xl bg-white shadow-xl p-4"
+          >
+            <span className="text-4xl" aria-hidden>🎤</span>
+            <p className="text-lg font-medium text-gray-800 min-w-[4em] text-center flex-1 flex items-center justify-center">
+              {common.recording.replace(/\.+$/, "")}
+              {".".repeat(recordingDots)}
+            </p>
+            <Button
+              variant="primary"
+              className="w-full mt-auto"
+              onClick={() => setShowRecordingPopup(false)}
+            >
+              {emergencyTr.done}
+            </Button>
+          </div>
+        </div>
+      )}
       <Header
         title={`${tour.name} (#${tour.id})`}
         showBack
@@ -134,13 +215,13 @@ export default function GuideTourManagePage() {
         {tab === "message" && (
           <>
             <p className="text-sm text-gray-600 mb-2">
-              📊 {tour.participants}/{tour.maxParticipants}명 🟢
+              📊 {participantsForTour.length}/{tour.maxParticipants}명 🟢
             </p>
             <p className="text-sm text-gray-500 mb-4">
               🇻🇳 {tour.languages?.vi ?? 0} 🇺🇸 {tour.languages?.en ?? 0} 🇰🇷 {tour.languages?.ko ?? 0}
             </p>
             <div className="mb-4">
-              <Button variant="outline" fullWidth className="mb-2">
+              <Button variant="outline" fullWidth className="mb-2" onClick={handleVoiceGuide}>
                 🎤 {tr.voiceGuide}
               </Button>
               <div className="flex gap-2">
@@ -152,6 +233,7 @@ export default function GuideTourManagePage() {
                 />
                 <Button
                   variant="primary"
+                  className="w-[80px] min-w-[80px] shrink-0"
                   onClick={() => handleSendMessage(inputText)}
                   disabled={sending || !inputText.trim()}
                 >
@@ -175,22 +257,35 @@ export default function GuideTourManagePage() {
             </div>
             <p className="text-sm font-medium text-gray-700 mb-2">─── {tr.receivedMessages} ───</p>
             <div className="space-y-2">
-              <Card className="bg-red-50 border-red-200">
-                <p className="font-medium">🔴 Nguyen: 화장실 어디?</p>
-                <p className="text-sm text-gray-600">📍 근정전 옆</p>
-                <Button variant="ghost" size="sm">{tr.reply}</Button>
-              </Card>
-              <Card className="bg-yellow-50 border-yellow-200">
-                <p className="font-medium">🟡 John: 사진 찍어주세요</p>
-                <p className="text-sm text-gray-600">👍 알겠습니다</p>
-                <Button variant="ghost" size="sm">{tr.reply}</Button>
-              </Card>
-              {messages.map((m) => (
+              {[...messages].reverse().map((m) => (
                 <Card key={m.id}>
                   <p className="text-sm text-gray-600">{m.originalText}</p>
                   <p className="text-xs text-gray-400">{getRelativeTime(m.timestamp)}</p>
+                  <Button variant="ghost" size="sm" onClick={() => handleListen(m.originalText)}>
+                    🔊 {touristTr.listen}
+                  </Button>
                 </Card>
               ))}
+              <Card className="bg-yellow-50 border-yellow-200">
+                <p className="font-medium">🟡 John: 사진 찍어주세요</p>
+                <p className="text-sm text-gray-600">👍 알겠습니다</p>
+                <div className="flex gap-1 mt-1">
+                  <Button variant="ghost" size="sm" onClick={() => handleListen("John: 사진 찍어주세요")}>
+                    🔊 {touristTr.listen}
+                  </Button>
+                  <Button variant="ghost" size="sm" onClick={handleVoiceGuide}>{tr.reply}</Button>
+                </div>
+              </Card>
+              <Card className="bg-red-50 border-red-200">
+                <p className="font-medium">🔴 Nguyen: 화장실 어디?</p>
+                <p className="text-sm text-gray-600">📍 근정전 옆</p>
+                <div className="flex gap-1 mt-1">
+                  <Button variant="ghost" size="sm" onClick={() => handleListen("Nguyen: 화장실 어디?")}>
+                    🔊 {touristTr.listen}
+                  </Button>
+                  <Button variant="ghost" size="sm" onClick={handleVoiceGuide}>{tr.reply}</Button>
+                </div>
+              </Card>
             </div>
           </>
         )}
@@ -198,7 +293,7 @@ export default function GuideTourManagePage() {
         {tab === "participants" && (
           <>
             <p className="text-sm text-gray-600 mb-2">
-              {tr.totalParticipants} ({fakeParticipants.length}/{tour.maxParticipants})
+              {tr.totalParticipants} ({participantsForTour.length}/{tour.maxParticipants})
             </p>
             <div className="flex gap-2 mb-4">
               <Button variant="outline" size="sm">➕ {tr.inviteParticipants}</Button>
@@ -241,19 +336,21 @@ export default function GuideTourManagePage() {
         {tab === "stats" && (
           <>
             <p className="text-lg font-medium mb-4">{tr.totalParticipants}</p>
-            <p className="text-2xl font-bold mb-6">총 {fakeParticipants.length}명</p>
+            <p className="text-2xl font-bold mb-6">총 {participantsForTour.length}명</p>
             <p className="text-sm font-medium text-gray-700 mb-2">{tr.languageDistribution}</p>
             <ul className="space-y-1 mb-6">
-              <li>🇻🇳 베트남어: 10명 (33%)</li>
-              <li>🇺🇸 English: 8명 (27%)</li>
-              <li>🇰🇷 한국어: 5명 (17%)</li>
-              <li>🇨🇳 简体中文: 4명 (13%)</li>
-              <li>🇹🇼 繁體中文: 2명 (7%)</li>
-              <li>🇯🇵 日本語: 1명 (3%)</li>
+              {Object.entries(byLang).map(([lang, list]) => (
+                <li key={lang}>
+                  {list[0]?.flag} {list[0]?.languageName}: {list.length}명 (
+                  {participantsForTour.length ? Math.round((list.length / participantsForTour.length) * 100) : 0}%)
+                </li>
+              ))}
             </ul>
             <p className="text-sm font-medium text-gray-700 mb-2">접속 상태</p>
-            <p className="mb-4">🟢 {tr.online}: {onlineCount}명 (90%)</p>
-            <p className="mb-6">🔴 {tr.offline}: {fakeParticipants.length - onlineCount}명 (10%)</p>
+            <p className="mb-4">🟢 {tr.online}: {onlineCount}명 (
+              {participantsForTour.length ? Math.round((onlineCount / participantsForTour.length) * 100) : 0}%)</p>
+            <p className="mb-6">🔴 {tr.offline}: {participantsForTour.length - onlineCount}명 (
+              {participantsForTour.length ? Math.round(((participantsForTour.length - onlineCount) / participantsForTour.length) * 100) : 0}%)</p>
             <p className="text-sm font-medium text-gray-700 mb-2">{tr.activityStats}</p>
             <p>{tr.totalMessages}: 45건</p>
             <p>{tr.questions}: 12건</p>

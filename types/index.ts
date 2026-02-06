@@ -26,6 +26,8 @@ export interface Participant {
   flag: string;
   isOnline: boolean;
   joinedAt: string;
+  /** 참여 중인 투어 ID (표시 인원수·참여자 목록 일치용) */
+  tourId?: string;
 }
 
 export interface Message {

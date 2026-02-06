@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useApp } from "@/contexts/AppContext";
 import { t, replaceName } from "@/lib/i18n";
-import { fakeTours } from "@/lib/mockData";
+import { fakeTours, getParticipantsForTour } from "@/lib/mockData";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
@@ -53,7 +53,7 @@ export default function GuideHomePage() {
                   </Badge>
                 </div>
                 <p className="text-sm">
-                  👥 {tour.participants}/{tour.maxParticipants}{tr.participants}
+                  👥 {getParticipantsForTour(tour.id).length}/{tour.maxParticipants}{tr.participants}
                 </p>
                 <Link href={`/guide/tour/${tour.id}`}>
                   <Button variant="primary" size="sm" fullWidth>

@@ -221,39 +221,44 @@ export const fakeTours: Tour[] = [
   },
 ];
 
-/** 가짜 참여자 30명 - PRD 338-341 */
+/** 가짜 참여자 30명 - PRD 338-341. tourId: A1234 15명, B5678 12명, 미배정 3명 */
 export const fakeParticipants: Participant[] = [
-  { id: "p1", name: "Nguyen Van A", email: "a@v.com", language: "vi", languageName: "베트남어", flag: "🇻🇳", isOnline: true, joinedAt: "" },
-  { id: "p2", name: "Tran Thi B", email: "b@v.com", language: "vi", languageName: "베트남어", flag: "🇻🇳", isOnline: true, joinedAt: "" },
-  { id: "p3", name: "Le Van C", email: "c@v.com", language: "vi", languageName: "베트남어", flag: "🇻🇳", isOnline: false, joinedAt: "" },
-  { id: "p4", name: "Pham Thi D", email: "d@v.com", language: "vi", languageName: "베트남어", flag: "🇻🇳", isOnline: true, joinedAt: "" },
-  { id: "p5", name: "Hoang Van E", email: "e@v.com", language: "vi", languageName: "베트남어", flag: "🇻🇳", isOnline: true, joinedAt: "" },
-  { id: "p6", name: "Vo Thi F", email: "f@v.com", language: "vi", languageName: "베트남어", flag: "🇻🇳", isOnline: true, joinedAt: "" },
-  { id: "p7", name: "Do Van G", email: "g@v.com", language: "vi", languageName: "베트남어", flag: "🇻🇳", isOnline: false, joinedAt: "" },
-  { id: "p8", name: "Bui Thi H", email: "h@v.com", language: "vi", languageName: "베트남어", flag: "🇻🇳", isOnline: true, joinedAt: "" },
-  { id: "p9", name: "Dang Van I", email: "i@v.com", language: "vi", languageName: "베트남어", flag: "🇻🇳", isOnline: true, joinedAt: "" },
-  { id: "p10", name: "Ngo Thi J", email: "j@v.com", language: "vi", languageName: "베트남어", flag: "🇻🇳", isOnline: true, joinedAt: "" },
-  { id: "p11", name: "John Smith", email: "j@e.com", language: "en", languageName: "English", flag: "🇺🇸", isOnline: true, joinedAt: "" },
-  { id: "p12", name: "Sarah Lee", email: "s@e.com", language: "en", languageName: "English", flag: "🇺🇸", isOnline: true, joinedAt: "" },
-  { id: "p13", name: "Michael Brown", email: "m@e.com", language: "en", languageName: "English", flag: "🇺🇸", isOnline: true, joinedAt: "" },
-  { id: "p14", name: "Emily Davis", email: "e@e.com", language: "en", languageName: "English", flag: "🇺🇸", isOnline: false, joinedAt: "" },
-  { id: "p15", name: "James Wilson", email: "w@e.com", language: "en", languageName: "English", flag: "🇺🇸", isOnline: true, joinedAt: "" },
-  { id: "p16", name: "Emma Johnson", email: "em@e.com", language: "en", languageName: "English", flag: "🇺🇸", isOnline: true, joinedAt: "" },
-  { id: "p17", name: "David Miller", email: "d@e.com", language: "en", languageName: "English", flag: "🇺🇸", isOnline: true, joinedAt: "" },
-  { id: "p18", name: "Olivia Taylor", email: "o@e.com", language: "en", languageName: "English", flag: "🇺🇸", isOnline: true, joinedAt: "" },
-  { id: "p19", name: "김철수", email: "k1@ko.com", language: "ko", languageName: "한국어", flag: "🇰🇷", isOnline: true, joinedAt: "" },
-  { id: "p20", name: "박영희", email: "k2@ko.com", language: "ko", languageName: "한국어", flag: "🇰🇷", isOnline: true, joinedAt: "" },
-  { id: "p21", name: "이민수", email: "k3@ko.com", language: "ko", languageName: "한국어", flag: "🇰🇷", isOnline: false, joinedAt: "" },
-  { id: "p22", name: "정수진", email: "k4@ko.com", language: "ko", languageName: "한국어", flag: "🇰🇷", isOnline: true, joinedAt: "" },
-  { id: "p23", name: "최동훈", email: "k5@ko.com", language: "ko", languageName: "한국어", flag: "🇰🇷", isOnline: true, joinedAt: "" },
-  { id: "p24", name: "李明", email: "z1@zh.com", language: "zh-CN", languageName: "简体中文", flag: "🇨🇳", isOnline: true, joinedAt: "" },
-  { id: "p25", name: "王芳", email: "z2@zh.com", language: "zh-CN", languageName: "简体中文", flag: "🇨🇳", isOnline: true, joinedAt: "" },
-  { id: "p26", name: "张伟", email: "z3@zh.com", language: "zh-CN", languageName: "简体中文", flag: "🇨🇳", isOnline: false, joinedAt: "" },
-  { id: "p27", name: "刘娜", email: "z4@zh.com", language: "zh-CN", languageName: "简体中文", flag: "🇨🇳", isOnline: true, joinedAt: "" },
+  { id: "p1", name: "Nguyen Van A", email: "a@v.com", language: "vi", languageName: "베트남어", flag: "🇻🇳", isOnline: true, joinedAt: "", tourId: "A1234" },
+  { id: "p2", name: "Tran Thi B", email: "b@v.com", language: "vi", languageName: "베트남어", flag: "🇻🇳", isOnline: true, joinedAt: "", tourId: "A1234" },
+  { id: "p3", name: "Le Van C", email: "c@v.com", language: "vi", languageName: "베트남어", flag: "🇻🇳", isOnline: false, joinedAt: "", tourId: "A1234" },
+  { id: "p4", name: "Pham Thi D", email: "d@v.com", language: "vi", languageName: "베트남어", flag: "🇻🇳", isOnline: true, joinedAt: "", tourId: "A1234" },
+  { id: "p5", name: "Hoang Van E", email: "e@v.com", language: "vi", languageName: "베트남어", flag: "🇻🇳", isOnline: true, joinedAt: "", tourId: "A1234" },
+  { id: "p6", name: "Vo Thi F", email: "f@v.com", language: "vi", languageName: "베트남어", flag: "🇻🇳", isOnline: true, joinedAt: "", tourId: "A1234" },
+  { id: "p7", name: "Do Van G", email: "g@v.com", language: "vi", languageName: "베트남어", flag: "🇻🇳", isOnline: false, joinedAt: "", tourId: "A1234" },
+  { id: "p8", name: "Bui Thi H", email: "h@v.com", language: "vi", languageName: "베트남어", flag: "🇻🇳", isOnline: true, joinedAt: "", tourId: "A1234" },
+  { id: "p9", name: "Dang Van I", email: "i@v.com", language: "vi", languageName: "베트남어", flag: "🇻🇳", isOnline: true, joinedAt: "", tourId: "A1234" },
+  { id: "p10", name: "Ngo Thi J", email: "j@v.com", language: "vi", languageName: "베트남어", flag: "🇻🇳", isOnline: true, joinedAt: "", tourId: "A1234" },
+  { id: "p11", name: "John Smith", email: "j@e.com", language: "en", languageName: "English", flag: "🇺🇸", isOnline: true, joinedAt: "", tourId: "A1234" },
+  { id: "p12", name: "Sarah Lee", email: "s@e.com", language: "en", languageName: "English", flag: "🇺🇸", isOnline: true, joinedAt: "", tourId: "A1234" },
+  { id: "p13", name: "Michael Brown", email: "m@e.com", language: "en", languageName: "English", flag: "🇺🇸", isOnline: true, joinedAt: "", tourId: "A1234" },
+  { id: "p14", name: "Emily Davis", email: "e@e.com", language: "en", languageName: "English", flag: "🇺🇸", isOnline: false, joinedAt: "", tourId: "A1234" },
+  { id: "p15", name: "James Wilson", email: "w@e.com", language: "en", languageName: "English", flag: "🇺🇸", isOnline: true, joinedAt: "", tourId: "A1234" },
+  { id: "p16", name: "Emma Johnson", email: "em@e.com", language: "en", languageName: "English", flag: "🇺🇸", isOnline: true, joinedAt: "", tourId: "B5678" },
+  { id: "p17", name: "David Miller", email: "d@e.com", language: "en", languageName: "English", flag: "🇺🇸", isOnline: true, joinedAt: "", tourId: "B5678" },
+  { id: "p18", name: "Olivia Taylor", email: "o@e.com", language: "en", languageName: "English", flag: "🇺🇸", isOnline: true, joinedAt: "", tourId: "B5678" },
+  { id: "p19", name: "김철수", email: "k1@ko.com", language: "ko", languageName: "한국어", flag: "🇰🇷", isOnline: true, joinedAt: "", tourId: "B5678" },
+  { id: "p20", name: "박영희", email: "k2@ko.com", language: "ko", languageName: "한국어", flag: "🇰🇷", isOnline: true, joinedAt: "", tourId: "B5678" },
+  { id: "p21", name: "이민수", email: "k3@ko.com", language: "ko", languageName: "한국어", flag: "🇰🇷", isOnline: false, joinedAt: "", tourId: "B5678" },
+  { id: "p22", name: "정수진", email: "k4@ko.com", language: "ko", languageName: "한국어", flag: "🇰🇷", isOnline: true, joinedAt: "", tourId: "B5678" },
+  { id: "p23", name: "최동훈", email: "k5@ko.com", language: "ko", languageName: "한국어", flag: "🇰🇷", isOnline: true, joinedAt: "", tourId: "B5678" },
+  { id: "p24", name: "李明", email: "z1@zh.com", language: "zh-CN", languageName: "简体中文", flag: "🇨🇳", isOnline: true, joinedAt: "", tourId: "B5678" },
+  { id: "p25", name: "王芳", email: "z2@zh.com", language: "zh-CN", languageName: "简体中文", flag: "🇨🇳", isOnline: true, joinedAt: "", tourId: "B5678" },
+  { id: "p26", name: "张伟", email: "z3@zh.com", language: "zh-CN", languageName: "简体中文", flag: "🇨🇳", isOnline: false, joinedAt: "", tourId: "B5678" },
+  { id: "p27", name: "刘娜", email: "z4@zh.com", language: "zh-CN", languageName: "简体中文", flag: "🇨🇳", isOnline: true, joinedAt: "", tourId: "B5678" },
   { id: "p28", name: "陳大文", email: "zt1@zh.com", language: "zh-TW", languageName: "繁體中文", flag: "🇹🇼", isOnline: true, joinedAt: "" },
   { id: "p29", name: "林小美", email: "zt2@zh.com", language: "zh-TW", languageName: "繁體中文", flag: "🇹🇼", isOnline: true, joinedAt: "" },
   { id: "p30", name: "佐藤太郎", email: "ja@jp.com", language: "ja", languageName: "日本語", flag: "🇯🇵", isOnline: true, joinedAt: "" },
 ];
+
+/** 투어별 실제 참여자 목록 (표시 인원수와 참여자 탭/통계 일치용) */
+export function getParticipantsForTour(tourId: string): Participant[] {
+  return fakeParticipants.filter((p) => p.tourId === tourId);
+}
 
 /** 회원 검색용 가짜 사용자 DB (이메일 정확 일치용) */
 export const fakeUserDatabase = [

@@ -191,6 +191,8 @@ type Translations = {
     invalidCode: string;
     playing: string;
     playComplete: string;
+    recording: string;
+    exit: string;
   };
 };
 
@@ -354,6 +356,8 @@ export const translations: Record<LanguageCode, Translations> = {
       invalidCode: "투어 코드를 확인해주세요",
       playing: "재생 중...",
       playComplete: "재생 완료",
+      recording: "녹음중",
+      exit: "나가기",
     },
   },
   en: {
@@ -515,6 +519,8 @@ export const translations: Record<LanguageCode, Translations> = {
       invalidCode: "Please check the tour code",
       playing: "Playing...",
       playComplete: "Done",
+      recording: "Recording",
+      exit: "Exit",
     },
   },
   vi: {
@@ -676,6 +682,8 @@ export const translations: Record<LanguageCode, Translations> = {
       invalidCode: "Vui lòng kiểm tra mã tour",
       playing: "Đang phát...",
       playComplete: "Xong",
+      recording: "Đang ghi...",
+      exit: "Thoát",
     },
   },
   "zh-CN": {
@@ -837,6 +845,8 @@ export const translations: Record<LanguageCode, Translations> = {
       invalidCode: "请检查行程码",
       playing: "播放中...",
       playComplete: "播放完成",
+      recording: "录音中",
+      exit: "退出",
     },
   },
   "zh-TW": {
@@ -998,6 +1008,8 @@ export const translations: Record<LanguageCode, Translations> = {
       invalidCode: "請檢查行程碼",
       playing: "播放中...",
       playComplete: "播放完成",
+      recording: "錄音中",
+      exit: "離開",
     },
   },
   ja: {
@@ -1159,6 +1171,8 @@ export const translations: Record<LanguageCode, Translations> = {
       invalidCode: "ツアーコードを確認してください",
       playing: "再生中...",
       playComplete: "再生完了",
+      recording: "録音中",
+      exit: "終了",
     },
   },
   th: {
@@ -1320,6 +1334,8 @@ export const translations: Record<LanguageCode, Translations> = {
       invalidCode: "กรุณาตรวจสอบรหัสทัวร์",
       playing: "กำลังเล่น...",
       playComplete: "เล่นจบ",
+      recording: "กำลังบันทึก...",
+      exit: "ออก",
     },
   },
   id: {
@@ -1481,6 +1497,8 @@ export const translations: Record<LanguageCode, Translations> = {
       invalidCode: "Periksa kode tur",
       playing: "Memutar...",
       playComplete: "Selesai",
+      recording: "Merekam...",
+      exit: "Keluar",
     },
   },
 };
