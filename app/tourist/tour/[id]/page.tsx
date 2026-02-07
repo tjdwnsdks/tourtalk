@@ -5,13 +5,15 @@ import Link from "next/link";
 import { useState, useEffect } from "react";
 import toast from "react-hot-toast";
 import { useApp } from "@/contexts/AppContext";
-import { fakeTours, getTourName } from "@/lib/mockData";
+import { fakeTours, getTourName, fakeTranslate } from "@/lib/mockData";
 import { getRelativeTime } from "@/lib/utils";
-import type { Tour } from "@/types";
+import type { Tour, Message, LanguageCode } from "@/types";
 import { t } from "@/lib/i18n";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { Header } from "@/components/layout/Header";
+
+const LANG_CODES: LanguageCode[] = ["ko", "en", "vi", "zh-CN", "zh-TW", "ja", "th", "id"];
 
 const GUIDE_TOURS_KEY = "tourtalk_guide_tours";
 function loadGuideTours(): Tour[] {
@@ -27,11 +29,12 @@ function loadGuideTours(): Tour[] {
 export default function TouristMainPage() {
   const params = useParams();
   const id = params.id as string;
-  const { language, tourMessages } = useApp();
+  const { language, tourMessages, addTourMessage, userName } = useApp();
   const tr = t(language).tourist;
   const common = t(language).common;
   const [playingId, setPlayingId] = useState<string | null>(null);
   const [guideTours, setGuideTours] = useState<Tour[]>([]);
+  const [sending, setSending] = useState(false);
 
   useEffect(() => {
     setGuideTours(loadGuideTours());
@@ -54,6 +57,36 @@ export default function TouristMainPage() {
     toast.success(common.playComplete, { id: "play" });
   };
 
+  const handleSendMessage = async (text: string) => {
+    if (sending) return;
+    setSending(true);
+    toast.loading(common.sending, { id: "send-tourist-msg" });
+    await new Promise((r) => setTimeout(r, 2000));
+
+    // 메시지 번역
+    const translatedTexts: Record<string, string> = {};
+    for (const lang of LANG_CODES) {
+      translatedTexts[lang] = fakeTranslate(text, lang);
+    }
+
+    // 메시지 객체 생성
+    const msg: Message = {
+      id: `msg-tourist-${Date.now()}`,
+      tourId: id,
+      senderId: "tourist1",
+      senderName: userName || "Tourist",
+      senderRole: "tourist",
+      originalText: text,
+      translatedTexts,
+      timestamp: new Date().toISOString(),
+      isEmergency: text.includes("🆘"),
+    };
+
+    addTourMessage(id, msg);
+    setSending(false);
+    toast.success(common.messageSent, { id: "send-tourist-msg" });
+  };
+
   if (!tour) {
     return (
       <>
@@ -71,8 +104,7 @@ export default function TouristMainPage() {
       <Header
         title={`${getTourName(tour, language)} (#${tour.id})`}
         showBack
-        backHref="/tourist"
-        right={<><span>⚙️</span><span>🆘</span></>}
+        backHref="/tourist" 
       />
       <main className="p-4 max-w-lg mx-auto">
         <div className="flex items-center gap-2 mb-4 pb-2 border-b border-gray-200">
@@ -106,13 +138,30 @@ export default function TouristMainPage() {
 
         <div className="flex gap-2 justify-center mb-4">
           <Link href={`/tourist/request?tourId=${id}`}>
-            <Button variant="outline">🎤 {tr.question}</Button>
+            <Button variant="outline" disabled={sending}>🎤 {tr.question}</Button>
           </Link>
-          <Button variant="outline">📷 {tr.photo}</Button>
-          <Button variant="outline">💬 {tr.more}</Button>
+          <Button
+            variant="outline"
+            onClick={() => handleSendMessage("📷 사진 찍어주세요")}
+            disabled={sending}
+          >
+            📷 {tr.photo}
+          </Button>
+          <Button
+            variant="outline"
+            onClick={() => handleSendMessage("💬 추가 요청이 있습니다")}
+            disabled={sending}
+          >
+            💬 {tr.more}
+          </Button>
         </div>
         <div className="flex justify-center">
-          <Button variant="danger" size="lg">
+          <Button
+            variant="danger"
+            size="lg"
+            onClick={() => handleSendMessage("🆘 긴급 상황입니다")}
+            disabled={sending}
+          >
             🆘 {tr.emergency}
           </Button>
         </div>
