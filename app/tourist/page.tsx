@@ -78,7 +78,7 @@ export default function TouristJoinPage() {
 
   return (
     <>
-      <Header title="TourTalk" right={<><span>⚙️</span><span>🆘</span></>} />
+      <Header title="TourTalk" />
       <main className="p-4 max-w-lg mx-auto">
         <h2 className="text-xl font-bold mb-6">
           {replaceName(tr.hello, userName || "Tourist")}

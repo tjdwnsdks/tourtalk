@@ -128,13 +128,13 @@ export default function TouristMainPage() {
           >
             📷 {tr.photo}
           </Button>
-          <Button
+          {/* <Button
             variant="outline"
             onClick={() => handleSendMessage(3)}
             disabled={sending}
           >
             💬 {tr.more}
-          </Button>
+          </Button> */}
         </div>
         <div className="flex justify-center mb-6">
           <Button
