@@ -283,6 +283,295 @@ Jun
 
 ---
 
+## ✨ 추가 기능 명세
+
+### 1️⃣ 입력 유효성 검사
+
+#### 프로필 화면 (0번 화면)
+**이름 입력 검증:**
+- ❌ 빈칸 입력 시 → 에러 메시지 표시
+- ❌ 숫자만 입력 시 → 에러 메시지 표시
+- ✅ 올바른 이름 입력 → 다음 단계 진행
+
+**에러 메시지 (8개 언어):**
+```javascript
+invalidFormat: {
+  ko: "올바른 이름을 입력해주세요",
+  en: "Please enter a valid name",
+  vi: "Vui lòng nhập tên hợp lệ",
+  "zh-CN": "请输入有效的姓名",
+  "zh-TW": "請輸入有效的姓名",
+  ja: "有効な名前を入力してください",
+  th: "กรุณากรอกชื่อที่ถูกต้อง",
+  id: "Silakan masukkan nama yang valid"
+}
+```
+
+**추가 동작:**
+- userName이 "User"일 때 자동 채우지 않음
+- 에러 발생 시에만 안내 문구 표시
+
+---
+
+#### 긴급 연락망 화면 (2번 화면)
+**이메일 유효성 검사:**
+- 정규식 검사: `/^[^\s@]+@[^\s@]+\.[^\s@]+$/`
+- ❌ 형식 오류 → 에러 메시지 표시
+- ✅ 올바른 형식 → 추가 진행
+
+**에러 메시지 (8개 언어):**
+```javascript
+invalidEmail: {
+  ko: "올바른 이메일 주소를 입력해주세요",
+  en: "Please enter a valid email address",
+  vi: "Vui lòng nhập địa chỉ email hợp lệ",
+  "zh-CN": "请输入有效的电子邮件地址",
+  "zh-TW": "請輸入有效的電子郵件地址",
+  ja: "有効なメールアドレスを入力してください",
+  th: "กรุณากรอกอีเมลที่ถูกต้อง",
+  id: "Silakan masukkan alamat email yang valid"
+}
+```
+
+**완료 버튼 검증:**
+- 등록된 연락처 0개일 때 [완료] 클릭 시
+- ⚠️ 경고 모달 표시: "긴급 연락망 리스트에 이메일을 추가하세요"
+
+**경고 메시지 (8개 언어):**
+```javascript
+noContactWarning: {
+  ko: "긴급 연락망 리스트에 이메일을 추가하세요",
+  en: "Please add at least one emergency contact",
+  vi: "Vui lòng thêm ít nhất một liên hệ khẩn cấp",
+  "zh-CN": "请至少添加一个紧急联系人",
+  "zh-TW": "請至少添加一個緊急聯絡人",
+  ja: "緊急連絡先を少なくとも1つ追加してください",
+  th: "กรุณาเพิ่มผู้ติดต่อฉุกเฉินอย่างน้อย 1 คน",
+  id: "Silakan tambahkan minimal satu kontak darurat"
+}
+```
+
+---
+
+### 2️⃣ 햄버거 메뉴 구성 변경
+
+**기존 PRD:**
+```
+☰ 메뉴:
+- 🌐 Language
+- ⚙️ Settings
+- ❓ Help
+- 📧 Contact
+```
+
+**변경 후:**
+```
+☰ 메뉴:
+- ⚙️ Settings
+- 🆘 긴급 연락망 설정 → /onboarding/emergency
+- ❓ Help
+- 📧 Contact
+```
+
+**변경 이유:**
+- 언어 선택은 우측 상단 🌐 버튼으로 이동 (중복 제거)
+- 사용자가 나중에 긴급 연락망을 수정할 수 있는 경로 제공
+
+**메뉴 텍스트 (8개 언어):**
+```javascript
+emergencyContacts: {
+  ko: "긴급 연락망 설정",
+  en: "Emergency Contacts",
+  vi: "Liên hệ khẩn cấp",
+  "zh-CN": "紧急联系人",
+  "zh-TW": "緊急聯絡人",
+  ja: "緊急連絡先",
+  th: "ผู้ติดต่อฉุกเฉิน",
+  id: "Kontak Darurat"
+}
+```
+
+---
+
+### 3️⃣ 언어 전환 동기화
+
+**프로필 화면 (0번)에서 언어 선택 시:**
+- 즉시 전체 UI가 선택한 언어로 변경
+- 헤더의 언어 표시도 동기화
+- 에러 메시지도 선택한 언어로 표시
+
+**구현 방법:**
+```javascript
+// useEffect로 언어 변경 감지
+useEffect(() => {
+  if (selectedLanguage) {
+    changeLanguage(selectedLanguage);
+  }
+}, [selectedLanguage]);
+```
+
+---
+
+### 4️⃣ 가이드 투어 관리 화면 강화
+
+#### 받은 메시지 정렬
+**현재:** 정렬 기준 없음  
+**변경:** 최신 메시지가 맨 위로 (역순 정렬)
+
+```javascript
+// 메시지 정렬
+const sortedMessages = [...receivedMessages].reverse();
+```
+
+---
+
+#### 🔊 듣기 버튼 추가
+**위치:** 받은 메시지 각각에 듣기 버튼 표시
+
+**클릭 시 동작:**
+1. 화면 중앙에 재생 팝업 표시
+2. "재생 중..." 텍스트 + 마침표 애니메이션
+   - "재생 중." → "재생 중.." → "재생 중..."
+   - 400ms 간격으로 순환
+3. [나가기] 버튼으로만 팝업 닫기
+4. 실제 음성 재생 없음 (MVP 0)
+
+**팝업 텍스트 (8개 언어):**
+```javascript
+playing: {
+  ko: "재생 중",
+  en: "Playing",
+  vi: "Đang phát",
+  "zh-CN": "播放中",
+  "zh-TW": "播放中",
+  ja: "再生中",
+  th: "กำลังเล่น",
+  id: "Memutar"
+},
+exit: {
+  ko: "나가기",
+  en: "Exit",
+  vi: "Thoát",
+  "zh-CN": "退出",
+  "zh-TW": "退出",
+  ja: "終了",
+  th: "ออก",
+  id: "Keluar"
+}
+```
+
+---
+
+#### 🎤 음성으로 안내하기 / 답장 버튼
+**위치:** 
+- 투어 관리 화면 상단: "🎤 음성으로 안내하기" 버튼
+- 받은 메시지 각각: "답장" 버튼
+
+**클릭 시 동작:**
+1. 화면 중앙에 녹음 팝업 표시
+2. "녹음중..." 텍스트 + 마침표 애니메이션
+   - "녹음중." → "녹음중.." → "녹음중..."
+   - 400ms 간격으로 순환
+3. [완료] 버튼으로만 팝업 닫기
+4. 실제 녹음 없음 (MVP 0)
+
+**팝업 텍스트 (8개 언어):**
+```javascript
+recording: {
+  ko: "녹음중",
+  en: "Recording",
+  vi: "Đang ghi âm",
+  "zh-CN": "录音中",
+  "zh-TW": "錄音中",
+  ja: "録音中",
+  th: "กำลังบันทึก",
+  id: "Merekam"
+},
+complete: {
+  ko: "완료",
+  en: "Complete",
+  vi: "Hoàn thành",
+  "zh-CN": "完成",
+  "zh-TW": "完成",
+  ja: "完了",
+  th: "เสร็จสิ้น",
+  id: "Selesai"
+}
+```
+
+---
+
+### 5️⃣ 데이터 정합성: 투어별 참여자 배정
+
+**문제:**
+- 현재 PRD: tour.participants = 30 (숫자만)
+- 실제 참여자 데이터와 불일치
+
+**해결:**
+```javascript
+// Participant 타입 확장
+interface Participant {
+  id: string;
+  name: string;
+  language: string;
+  status: 'online' | 'offline';
+  tourId?: string;  // 추가!
+}
+
+// 투어별 참여자 배정
+const fakeParticipants = [
+  // A1234 투어: 15명
+  { id: '1', name: 'Nguyen Van A', language: 'vi', status: 'online', tourId: 'A1234' },
+  { id: '2', name: 'Tran Thi B', language: 'vi', status: 'online', tourId: 'A1234' },
+  // ... (총 15명)
+  
+  // B5678 투어: 12명
+  { id: '16', name: 'John Smith', language: 'en', status: 'online', tourId: 'B5678' },
+  // ... (총 12명)
+  
+  // 미배정: 3명
+  { id: '28', name: 'Kim Min-soo', language: 'ko', status: 'offline' },
+  // ...
+];
+
+// 투어별 필터링 함수
+const getParticipantsForTour = (tourId: string) => {
+  return fakeParticipants.filter(p => p.tourId === tourId);
+};
+```
+
+**적용 위치:**
+1. **가이드 홈 화면 (3번):**
+   - 투어 카드에 표시되는 인원수
+   - `👥 ${getParticipantsForTour('A1234').length}/30명`
+
+2. **투어 관리 화면 (5번) - 참여자 탭:**
+   - 해당 투어 참여자만 표시
+   - 언어별 그룹도 실제 데이터 기반
+
+3. **투어 관리 화면 (5번) - 통계 탭:**
+   - 언어별 분포: 실제 참여자 언어 집계
+   - 접속 상태: 실제 참여자 status 집계
+   - 비율 계산: 실제 데이터 기반
+
+**예시 - A1234 투어 통계:**
+```
+총 15명
+
+언어별 분포:
+🇻🇳 베트남어: 5명 (33%)
+🇺🇸 English: 4명 (27%)
+🇰🇷 한국어: 3명 (20%)
+🇨🇳 简体中文: 2명 (13%)
+🇯🇵 日本語: 1명 (7%)
+
+접속 상태:
+🟢 온라인: 14명 (93%)
+🔴 오프라인: 1명 (7%)
+```
+
+---
+
 ### 📝 미리 준비할 가짜 데이터
 
 #### 1. 번역 문구 세트 (10개)
@@ -352,62 +641,129 @@ const fakeTours = [
 ];
 ```
 
-#### 4. 가짜 참여자 데이터 (30명)
+#### 4. 가짜 참여자 데이터 (투어별 배정)
 
 ```javascript
 const fakeParticipants = [
-  // 베트남어 (10명)
-  { name: "Nguyen Van A", language: "vi", status: "online" },
-  { name: "Tran Thi B", language: "vi", status: "online" },
-  { name: "Le Van C", language: "vi", status: "offline" },
-  { name: "Pham Thi D", language: "vi", status: "online" },
-  { name: "Hoang Van E", language: "vi", status: "online" },
-  { name: "Vo Thi F", language: "vi", status: "online" },
-  { name: "Do Van G", language: "vi", status: "offline" },
-  { name: "Bui Thi H", language: "vi", status: "online" },
-  { name: "Dang Van I", language: "vi", status: "online" },
-  { name: "Ngo Thi J", language: "vi", status: "online" },
+  // A1234 투어: 15명
+  // 베트남어 (5명)
+  { id: '1', name: "Nguyen Van A", language: "vi", status: "online", tourId: "A1234" },
+  { id: '2', name: "Tran Thi B", language: "vi", status: "online", tourId: "A1234" },
+  { id: '3', name: "Le Van C", language: "vi", status: "offline", tourId: "A1234" },
+  { id: '4', name: "Pham Thi D", language: "vi", status: "online", tourId: "A1234" },
+  { id: '5', name: "Hoang Van E", language: "vi", status: "online", tourId: "A1234" },
   
-  // 영어 (8명)
-  { name: "John Smith", language: "en", status: "online" },
-  { name: "Sarah Lee", language: "en", status: "online" },
-  { name: "Michael Brown", language: "en", status: "online" },
-  { name: "Emily Davis", language: "en", status: "offline" },
-  { name: "James Wilson", language: "en", status: "online" },
-  { name: "Emma Johnson", language: "en", status: "online" },
-  { name: "David Miller", language: "en", status: "online" },
-  { name: "Olivia Taylor", language: "en", status: "online" },
+  // 영어 (4명)
+  { id: '6', name: "John Smith", language: "en", status: "online", tourId: "A1234" },
+  { id: '7', name: "Emma Wilson", language: "en", status: "online", tourId: "A1234" },
+  { id: '8', name: "Michael Brown", language: "en", status: "online", tourId: "A1234" },
+  { id: '9', name: "Sarah Davis", language: "en", status: "offline", tourId: "A1234" },
   
-  // 한국어 (5명)
-  { name: "김철수", language: "ko", status: "online" },
-  { name: "박영희", language: "ko", status: "online" },
-  { name: "이민수", language: "ko", status: "offline" },
-  { name: "정수진", language: "ko", status: "online" },
-  { name: "최동훈", language: "ko", status: "online" },
+  // 한국어 (3명)
+  { id: '10', name: "김민수", language: "ko", status: "online", tourId: "A1234" },
+  { id: '11', name: "이영희", language: "ko", status: "online", tourId: "A1234" },
+  { id: '12', name: "박철수", language: "ko", status: "online", tourId: "A1234" },
   
-  // 중국어 간체 (4명)
-  { name: "李明", language: "zh-CN", status: "online" },
-  { name: "王芳", language: "zh-CN", status: "online" },
-  { name: "张伟", language: "zh-CN", status: "offline" },
-  { name: "刘娜", language: "zh-CN", status: "online" },
-  
-  // 중국어 번체 (2명)
-  { name: "陳大文", language: "zh-TW", status: "online" },
-  { name: "林小美", language: "zh-TW", status: "online" },
+  // 중국어 간체 (2명)
+  { id: '13', name: "Wang Wei", language: "zh-CN", status: "online", tourId: "A1234" },
+  { id: '14', name: "Li Ming", language: "zh-CN", status: "online", tourId: "A1234" },
   
   // 일본어 (1명)
-  { name: "佐藤太郎", language: "ja", status: "online" }
+  { id: '15', name: "Tanaka Yuki", language: "ja", status: "offline", tourId: "A1234" },
+  
+  // B5678 투어: 12명
+  // 영어 (5명)
+  { id: '16', name: "James Taylor", language: "en", status: "online", tourId: "B5678" },
+  { id: '17', name: "Olivia Martin", language: "en", status: "online", tourId: "B5678" },
+  { id: '18', name: "Robert Anderson", language: "en", status: "online", tourId: "B5678" },
+  { id: '19', name: "Sophia White", language: "en", status: "online", tourId: "B5678" },
+  { id: '20', name: "Daniel Harris", language: "en", status: "offline", tourId: "B5678" },
+  
+  // 한국어 (4명)
+  { id: '21', name: "정수민", language: "ko", status: "online", tourId: "B5678" },
+  { id: '22', name: "최지훈", language: "ko", status: "online", tourId: "B5678" },
+  { id: '23', name: "강서연", language: "ko", status: "online", tourId: "B5678" },
+  { id: '24', name: "윤준호", language: "ko", status: "offline", tourId: "B5678" },
+  
+  // 베트남어 (2명)
+  { id: '25', name: "Do Van F", language: "vi", status: "online", tourId: "B5678" },
+  { id: '26', name: "Bui Thi G", language: "vi", status: "online", tourId: "B5678" },
+  
+  // 중국어 번체 (1명)
+  { id: '27', name: "Chen Li", language: "zh-TW", status: "online", tourId: "B5678" },
+  
+  // 미배정 참여자 (3명) - 테스트용
+  { id: '28', name: "Test User 1", language: "ko", status: "offline" },
+  { id: '29', name: "Test User 2", language: "en", status: "offline" },
+  { id: '30', name: "Test User 3", language: "vi", status: "offline" }
 ];
 
-// 언어별 분포
-const languageDistribution = {
-  vi: 10,    // 33.3%
-  en: 8,     // 26.7%
-  ko: 5,     // 16.7%
-  "zh-CN": 4, // 13.3%
-  "zh-TW": 2, // 6.7%
-  ja: 1      // 3.3%
+// 투어별 참여자 필터링 함수
+const getParticipantsForTour = (tourId) => {
+  return fakeParticipants.filter(p => p.tourId === tourId);
 };
+
+// 언어별 그룹핑 함수
+const groupByLanguage = (participants) => {
+  return participants.reduce((acc, p) => {
+    if (!acc[p.language]) acc[p.language] = [];
+    acc[p.language].push(p);
+    return acc;
+  }, {});
+};
+
+// 통계 계산 함수
+const calculateStats = (participants) => {
+  const total = participants.length;
+  const online = participants.filter(p => p.status === 'online').length;
+  const offline = total - online;
+  
+  const languageStats = groupByLanguage(participants);
+  const languageDistribution = Object.entries(languageStats).map(([lang, users]) => ({
+    language: lang,
+    count: users.length,
+    percentage: Math.round((users.length / total) * 100)
+  }));
+  
+  return {
+    total,
+    online,
+    offline,
+    onlinePercentage: Math.round((online / total) * 100),
+    offlinePercentage: Math.round((offline / total) * 100),
+    languageDistribution
+  };
+};
+```
+
+**사용 예시:**
+```javascript
+// A1234 투어 참여자 조회
+const tourA1234Participants = getParticipantsForTour('A1234');
+// 결과: 15명
+
+// A1234 투어 통계
+const statsA1234 = calculateStats(tourA1234Participants);
+/*
+{
+  total: 15,
+  online: 14,
+  offline: 1,
+  onlinePercentage: 93,
+  offlinePercentage: 7,
+  languageDistribution: [
+    { language: 'vi', count: 5, percentage: 33 },
+    { language: 'en', count: 4, percentage: 27 },
+    { language: 'ko', count: 3, percentage: 20 },
+    { language: 'zh-CN', count: 2, percentage: 13 },
+    { language: 'ja', count: 1, percentage: 7 }
+  ]
+}
+*/
+
+// B5678 투어 참여자 조회
+const tourB5678Participants = getParticipantsForTour('B5678');
+// 결과: 12명
 ```
 
 ---
@@ -462,6 +818,263 @@ const languageDistribution = {
    - "참여 중..." 1초
    - "✅ 투어 참여 완료!"
    - 관광객 메인 화면으로 이동
+```
+
+---
+
+## ✨ 추가 기능 명세
+
+### 1. 입력 유효성 검사
+
+#### 프로필 화면 (0️⃣)
+**이름 유효성 검사:**
+- 빈칸 입력 시 → 에러 메시지 표시
+- 숫자만 입력 시 → 에러 메시지 표시
+- 에러 발생 시 "다음" 버튼 클릭 차단
+
+**에러 메시지 (8개 언어):**
+
+| 언어 | 메시지 |
+|------|--------|
+| 🇰🇷 한국어 | 올바른 이름을 입력해주세요 |
+| 🇺🇸 English | Please enter a valid name |
+| 🇻🇳 Tiếng Việt | Vui lòng nhập tên hợp lệ |
+| 🇨🇳 简体中文 | 请输入有效的姓名 |
+| 🇹🇼 繁體中文 | 請輸入有效的姓名 |
+| 🇯🇵 日本語 | 有効な名前を入力してください |
+| 🇹🇭 ภาษาไทย | กรุณากรอกชื่อที่ถูกต้อง |
+| 🇮🇩 Bahasa Indonesia | Silakan masukkan nama yang valid |
+
+**userName이 "User"일 때:**
+- 이름 입력란을 빈칸으로 표시 (자동 채우지 않음)
+- 사용자가 직접 입력하도록 유도
+
+**언어 변경 동기화:**
+- 프로필 화면에서 언어 변경 시 즉시 반영
+- 헤더 및 전체 UI가 선택한 언어로 실시간 업데이트
+
+---
+
+#### 긴급 연락망 화면 (2️⃣)
+**이메일 유효성 검사:**
+- 이메일 형식 검증 (정규식 사용)
+- 잘못된 형식 입력 시 → 에러 메시지 표시
+
+**이메일 형식 검증 정규식:**
+```javascript
+const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+```
+
+**0개 추가 시 완료 차단:**
+- 긴급 연락망에 아무도 추가하지 않고 "완료" 클릭 시
+- 경고 모달 표시: "긴급 연락망 리스트에 이메일을 추가하세요"
+
+**에러 메시지 (8개 언어):**
+
+| 언어 | 이메일 형식 에러 | 0개 추가 에러 |
+|------|-----------------|--------------|
+| 🇰🇷 한국어 | 올바른 이메일 형식을 입력해주세요 | 긴급 연락망 리스트에 이메일을 추가하세요 |
+| 🇺🇸 English | Please enter a valid email format | Please add an email to the emergency contact list |
+| 🇻🇳 Tiếng Việt | Vui lòng nhập định dạng email hợp lệ | Vui lòng thêm email vào danh sách liên hệ khẩn cấp |
+| 🇨🇳 简体中文 | 请输入有效的邮箱格式 | 请添加邮箱到紧急联系人列表 |
+| 🇹🇼 繁體中文 | 請輸入有效的郵箱格式 | 請添加郵箱到緊急聯絡人列表 |
+| 🇯🇵 日本語 | 有効なメール形式を入力してください | 緊急連絡先リストにメールを追加してください |
+| 🇹🇭 ภาษาไทย | กรุณากรอกรูปแบบอีเมลที่ถูกต้อง | กรุณาเพิ่มอีเมลในรายชื่อติดต่อฉุกเฉิน |
+| 🇮🇩 Bahasa Indonesia | Silakan masukkan format email yang valid | Silakan tambahkan email ke daftar kontak darurat |
+
+---
+
+### 2. 햄버거 메뉴 구성 변경
+
+**기존 PRD:**
+```
+☰ 메뉴
+├── 🌐 Language
+├── ⚙️ Settings
+├── ❓ Help
+└── 📧 Contact
+```
+
+**변경 후:**
+```
+☰ 메뉴
+├── ⚙️ Settings
+├── 🆘 긴급 연락망 설정
+├── ❓ Help
+└── 📧 Contact
+```
+
+**변경 이유:**
+- Language 항목 제거 → 우측 상단 언어 버튼(🌐)으로 이동
+- 긴급 연락망 설정 추가 → 사용자가 나중에 수정할 수 있도록
+
+**긴급 연락망 설정 링크:**
+- 경로: `/onboarding/emergency`
+- 기능: 기존 연락처 수정/삭제/추가
+
+---
+
+### 3. 데이터 정합성 (투어별 참여자)
+
+**문제:**
+- PRD에서 투어 A1234가 "30명"이라고 표시
+- 하지만 실제 참여자 목록과 통계가 일치하지 않음
+
+**해결:**
+```javascript
+// Participant 타입 확장
+interface Participant {
+  id: string;
+  name: string;
+  language: string;
+  status: 'online' | 'offline';
+  tourId?: string;  // 추가
+}
+
+// 가짜 참여자 데이터
+const fakeParticipants = [
+  // A1234 투어: 15명
+  { id: '1', name: 'Nguyen Van A', language: 'vi', status: 'online', tourId: 'A1234' },
+  { id: '2', name: 'Tran Thi B', language: 'vi', status: 'online', tourId: 'A1234' },
+  // ... (총 15명)
+  
+  // B5678 투어: 12명
+  { id: '16', name: 'John Smith', language: 'en', status: 'online', tourId: 'B5678' },
+  // ... (총 12명)
+  
+  // 미배정: 3명
+  { id: '28', name: 'No Tour User', language: 'ko', status: 'offline' },
+];
+
+// 투어별 참여자 필터링
+const getParticipantsForTour = (tourId: string) => {
+  return fakeParticipants.filter(p => p.tourId === tourId);
+};
+```
+
+**적용 화면:**
+- **3️⃣ 가이드 홈:** 투어 카드에 실제 참여자 수 표시
+- **5️⃣ 투어 관리 - 참여자 탭:** 해당 투어 참여자만 표시
+- **5️⃣ 투어 관리 - 통계 탭:** 실제 참여자 기반 계산
+  - 언어별 분포
+  - 접속 상태 (온라인/오프라인)
+  - 비율 계산
+
+**예시 (A1234 투어 - 15명):**
+- 🇻🇳 베트남어: 5명 (33%)
+- 🇺🇸 English: 4명 (27%)
+- 🇰🇷 한국어: 3명 (20%)
+- 🇨🇳 简体中文: 2명 (13%)
+- 🇯🇵 日本語: 1명 (7%)
+
+---
+
+### 4. 가이드 투어 관리 화면 강화 (5️⃣)
+
+#### 4-1. 받은 메시지 정렬
+**기존:** 정렬 기준 없음  
+**변경:** 최신 메시지가 맨 위로 (역순 정렬)
+
+```javascript
+// 메시지 정렬
+const sortedMessages = [...messages].sort((a, b) => 
+  new Date(b.timestamp) - new Date(a.timestamp)
+);
+```
+
+**효과:**
+- 가장 최근 질문을 먼저 확인
+- 빠른 응답 가능
+
+---
+
+#### 4-2. 받은 메시지에 🔊 듣기 버튼 추가
+
+**기능:**
+- 관광객이 보낸 메시지 옆에 🔊 듣기 버튼 표시
+- 클릭 시 음성으로 재생 (시뮬레이션)
+
+**재생 UX:**
+```
+┌─────────────────────┐
+│                     │
+│   🔊 재생 중...     │
+│                     │
+│   [나가기]          │
+│                     │
+└─────────────────────┘
+
+- 화면 중앙 팝업 (가로 70%, max-width 300px, 정사각형)
+- 마침표 애니메이션: "재생 중." → "재생 중.." → "재생 중..." (400ms 간격)
+- "나가기" 버튼으로만 닫기 가능
+- 2-3초 후 자동으로 팝업 닫힘
+```
+
+**i18n 추가 (8개 언어):**
+
+| 언어 | "재생 중..." |
+|------|------------|
+| 🇰🇷 한국어 | 재생 중 |
+| 🇺🇸 English | Playing |
+| 🇻🇳 Tiếng Việt | Đang phát |
+| 🇨🇳 简体中文 | 播放中 |
+| 🇹🇼 繁體中文 | 播放中 |
+| 🇯🇵 日本語 | 再生中 |
+| 🇹🇭 ภาษาไทย | กำลังเล่น |
+| 🇮🇩 Bahasa Indonesia | Memutar |
+
+---
+
+#### 4-3. 음성으로 안내하기 버튼
+
+**기능:**
+- 가이드가 음성으로 메시지 전송 (시뮬레이션)
+- 클릭 시 녹음 중 팝업 표시
+
+**녹음 UX:**
+```
+┌─────────────────────┐
+│                     │
+│   🎤 녹음 중...     │
+│                     │
+│   [완료]            │
+│                     │
+└─────────────────────┘
+
+- 화면 중앙 팝업 (듣기와 동일한 스타일)
+- 마침표 애니메이션: "녹음 중." → "녹음 중.." → "녹음 중..." (400ms 간격)
+- "완료" 버튼으로만 닫기 가능
+- 완료 클릭 시 메시지 전송 (가짜)
+```
+
+**i18n 추가 (8개 언어):**
+
+| 언어 | "녹음 중..." | "완료" | "나가기" |
+|------|------------|--------|---------|
+| 🇰🇷 한국어 | 녹음 중 | 완료 | 나가기 |
+| 🇺🇸 English | Recording | Done | Exit |
+| 🇻🇳 Tiếng Việt | Đang ghi âm | Hoàn thành | Thoát |
+| 🇨🇳 简体中文 | 录音中 | 完成 | 退出 |
+| 🇹🇼 繁體中文 | 錄音中 | 完成 | 退出 |
+| 🇯🇵 日本語 | 録音中 | 完了 | 終了 |
+| 🇹🇭 ภาษาไทย | กำลังบันทึก | เสร็จสิ้น | ออก |
+| 🇮🇩 Bahasa Indonesia | Merekam | Selesai | Keluar |
+
+---
+
+#### 4-4. 답장 버튼
+
+**기능:**
+- 받은 메시지마다 "답장" 버튼 추가
+- 클릭 시 녹음 중 팝업 표시 (4-3과 동일)
+
+**플로우:**
+```
+1. 관광객 메시지: "화장실 어디 있나요?"
+2. 가이드가 [답장] 클릭
+3. 🎤 녹음 중 팝업 표시
+4. [완료] 클릭
+5. 답장 메시지 전송 (가짜)
 ```
 
 ---
@@ -557,8 +1170,8 @@ const languageDistribution = {
 │ ☰  TourTalk      🌐 한국어│
 ├─────────────────────────┤
 │ ┌───────────────────┐   │
-│ │ 🌐 Language       │   │
 │ │ ⚙️ Settings       │   │
+│ │ 🆘 긴급 연락망 설정│   │
 │ │ ❓ Help           │   │
 │ │ 📧 Contact        │   │
 │ └───────────────────┘   │
@@ -842,11 +1455,15 @@ const languageDistribution = {
 │ [⚠️ 긴급 공지]         │
 │                         │
 │ ─── 받은 메시지 ───     │
-│ 🔴 Nguyen: 화장실 어디?│
-│    📍 근정전 옆  [답장] │
+│ (최신순 정렬)          │
 │                         │
-│ 🟡 John: 사진 찍어주세요│
-│    👍 알겠습니다 [답장] │
+│ 🔴 John: 사진 찍어주세요│
+│    👍 알겠습니다        │
+│    [🔊 듣기] [답장]    │
+│                         │
+│ 🟡 Nguyen: 화장실 어디?│
+│    📍 근정전 옆         │
+│    [🔊 듣기] [답장]    │
 │                         │
 └─────────────────────────┘
 ↓ [👥 참여자] 탭 클릭
@@ -857,14 +1474,14 @@ const languageDistribution = {
 │ [💬 메시지] [👥 참여자] [📊 통계]│
 ├─────────────────────────┤
 │                         │
-│ 참여자 관리 (30/30)     │
+│ 참여자 관리 (15/30)     │
 │                         │
 │ [➕ 참여자 초대하기]    │
 │ [📋 명단 내보내기]      │
 │                         │
 │ ─── 언어별 그룹 ───     │
 │                         │
-│ 🇻🇳 베트남어 (10명) ▼  │
+│ 🇻🇳 베트남어 (5명) ▼   │
 │ ┌─────────────────────┐ │
 │ │ 🟢 Nguyen Van A     │ │
 │ │    [💬] [🚫 추방]   │ │
@@ -877,10 +1494,9 @@ const languageDistribution = {
 │ │    (오프라인)        │ │
 │ └─────────────────────┘ │
 │                         │
-│ 🇺🇸 English (8명) ▼    │
-│ 🇰🇷 한국어 (5명) ▼     │
-│ 🇨🇳 简体中文 (4명) ▼   │
-│ 🇹🇼 繁體中文 (2명) ▼   │
+│ 🇺🇸 English (4명) ▼    │
+│ 🇰🇷 한국어 (3명) ▼     │
+│ 🇨🇳 简体中文 (2명) ▼   │
 │ 🇯🇵 日本語 (1명) ▼     │
 │                         │
 │ ─────────────────────   │
@@ -898,23 +1514,22 @@ const languageDistribution = {
 │                         │
 │ 참여자 현황             │
 │                         │
-│  총 30명                │
+│  총 15명                │
 │                         │
 │  언어별 분포:           │
-│  🇻🇳 베트남어: 10명(33%)│
-│  🇺🇸 English: 8명 (27%) │
-│  🇰🇷 한국어: 5명 (17%)  │
-│  🇨🇳 简体中文: 4명(13%) │
-│  🇹🇼 繁體中文: 2명 (7%) │
-│  🇯🇵 日本語: 1명 (3%)   │
+│  🇻🇳 베트남어: 5명 (33%)│
+│  🇺🇸 English: 4명 (27%) │
+│  🇰🇷 한국어: 3명 (20%)  │
+│  🇨🇳 简体中文: 2명(13%) │
+│  🇯🇵 日本語: 1명 (7%)   │
 │                         │
 │  💡 실시간 자동 번역    │
 │                         │
 │ ─────────────────────   │
 │                         │
 │  접속 상태              │
-│  🟢 온라인: 27명 (90%) │
-│  🔴 오프라인: 3명 (10%)│
+│  🟢 온라인: 14명 (93%) │
+│  🔴 오프라인: 1명 (7%) │
 │                         │
 │ ─────────────────────   │
 │                         │
@@ -972,7 +1587,7 @@ const languageDistribution = {
 │  🕐 09:00 시작          │
 │  📍 경복궁 광화문       │
 │                         │
-│  👥 30명 참여중         │
+│  👥 15명 참여중         │
 │                         │
 │ ─────────────────────   │
 │                         │
@@ -987,7 +1602,7 @@ const languageDistribution = {
 │    (#A1234)   ⚙️ 🆘     │
 ├─────────────────────────┤
 │ 🎤 Kim MinSoo 🟢        │
-│ 👥 30명                 │
+│ 👥 15명                 │
 ├─────────────────────────┤
 │                         │
 │ 🔊 Chúng ta sẽ tập trung│
@@ -1123,7 +1738,7 @@ const languageDistribution = {
 | **Next.js** | 16.1.6 | React 프레임워크 |
 | **React** | 19.2.4 | UI 라이브러리 |
 | **TypeScript** | 5.9.3 | 타입 안정성 |
-| **Tailwind CSS** | 4.1.18 | 스타일링 |
+| **Tailwind CSS** | 4.0.0 | 스타일링 |
 
 ### UI 라이브러리
 | 기술 | 버전 | 용도 |
@@ -1148,7 +1763,7 @@ const languageDistribution = {
 - **Next.js 16.1.6**: 2025년 2월 최신 안정화 버전
 - **React 19.2.4**: Next.js 16 호환 최신 버전
 - **TypeScript 5.9.3**: 최신 안정화 버전  
-- **Tailwind CSS 4.1.18**: 최신 메이저 버전 (v4)
+- **Tailwind CSS 4.0.0**: 최신 메이저 버전 (v4)
 - 기타 라이브러리: npm 최신 안정화 버전 사용
 
 ### 📚 참고 문서
@@ -1200,7 +1815,6 @@ tourtalk-mvp/
 │   │
 │   └── modals/
 │       ├── EmergencyModal.tsx        # 긴급 알림 모달
-│       ├── LanguageModal.tsx         # 언어 선택 모달
 │       └── ConfirmModal.tsx          # 확인 모달
 │
 ├── lib/
@@ -1613,11 +2227,11 @@ const currentLanguage = localStorage.getItem('language') || 'ko';
 #### 필수 기술
 ```javascript
 {
-  "빌드 도구": "Vite",
-  "프레임워크": "React 18+",
-  "언어": "JavaScript (TypeScript 선택)",
-  "스타일링": "TailwindCSS",
-  "라우팅": "React Router v6",
+  "프레임워크": "Next.js 16.1.6 (App Router)",
+  "UI 라이브러리": "React 19.2.4",
+  "언어": "TypeScript 5.9.3",
+  "스타일링": "Tailwind CSS 4.0.0",
+  "라우팅": "Next.js App Router",
   "상태 관리": "React Context API + useState"
 }
 ```
@@ -1654,52 +2268,72 @@ const currentLanguage = localStorage.getItem('language') || 'ko';
 
 ---
 
-### 프로젝트 구조 (예상)
+### 프로젝트 구조 (실제 구현)
 
 ```
 tourtalk-mvp0/
-├── public/
-│   └── qr-sample.png          # QR 코드 샘플 이미지
+├── app/                       # Next.js App Router
+│   ├── page.tsx              # 0️⃣ 로그인/회원가입
+│   ├── layout.tsx            # 루트 레이아웃
+│   ├── globals.css           # 글로벌 스타일
+│   │
+│   ├── onboarding/           # 온보딩 화면
+│   │   ├── profile/
+│   │   │   └── page.tsx      # 프로필 입력 (첫 로그인)
+│   │   ├── role/
+│   │   │   └── page.tsx      # 1️⃣ 역할 선택
+│   │   └── emergency/
+│   │       └── page.tsx      # 2️⃣ 긴급 연락망 설정
+│   │
+│   ├── guide/                # 가이드 화면
+│   │   ├── page.tsx          # 3️⃣ 가이드 홈
+│   │   ├── create/
+│   │   │   └── page.tsx      # 4️⃣ 투어 생성
+│   │   └── tour/
+│   │       └── [id]/
+│   │           └── page.tsx  # 5️⃣ 투어 관리
+│   │
+│   └── tourist/              # 관광객 화면
+│       ├── page.tsx          # 6️⃣ 투어 참여
+│       ├── tour/
+│       │   └── [id]/
+│       │       └── page.tsx  # 7️⃣ 관광객 메인
+│       └── request/
+│           └── page.tsx      # 8️⃣ 빠른 요청
 │
-├── src/
-│   ├── components/            # 재사용 컴포넌트
-│   │   ├── Header.jsx
-│   │   ├── Button.jsx
-│   │   ├── LoadingSpinner.jsx
-│   │   └── Toast.jsx
-│   │
-│   ├── pages/                 # 8개 화면
-│   │   ├── LoginPage.jsx      # 0️⃣ 로그인
-│   │   ├── RoleSelectPage.jsx # 1️⃣ 역할 선택
-│   │   ├── EmergencyPage.jsx  # 2️⃣ 긴급 연락망
-│   │   ├── GuideHomePage.jsx  # 3️⃣ 가이드 홈
-│   │   ├── TourCreatePage.jsx # 4️⃣ 투어 생성
-│   │   ├── TourManagePage.jsx # 5️⃣ 투어 관리
-│   │   ├── TouristJoinPage.jsx# 6️⃣ 투어 참여
-│   │   ├── TouristMainPage.jsx# 7️⃣ 관광객 메인
-│   │   └── QuickRequestPage.jsx# 8️⃣ 빠른 요청
-│   │
-│   ├── data/                  # 가짜 데이터
-│   │   ├── translations.js    # 번역 문구 세트
-│   │   ├── tours.js          # 투어 목록
-│   │   ├── participants.js   # 참여자 목록
-│   │   └── messages.js       # 메시지 목록
-│   │
-│   ├── context/              # 전역 상태
-│   │   ├── UserContext.jsx   # 사용자 정보
-│   │   └── TourContext.jsx   # 투어 정보
-│   │
-│   ├── utils/                # 유틸 함수
-│   │   ├── fakeTranslate.js  # 가짜 번역 함수
-│   │   └── delay.js          # 딜레이 함수
-│   │
-│   ├── App.jsx               # 메인 앱
-│   ├── main.jsx              # 엔트리 포인트
-│   └── index.css             # 글로벌 스타일
+├── components/               # 재사용 컴포넌트
+│   ├── layout/
+│   │   ├── Header.tsx
+│   │   ├── Hamburger.tsx
+│   │   └── LanguageSelector.tsx
+│   ├── modals/
+│   │   ├── EmergencyModal.tsx
+│   │   └── ConfirmModal.tsx
+│   └── ui/
+│       ├── Button.tsx
+│       ├── Input.tsx
+│       ├── Card.tsx
+│       ├── Badge.tsx
+│       ├── GoogleLogo.tsx
+│       └── KakaoLogo.tsx
+│
+├── lib/                      # 가짜 데이터 & 유틸리티
+│   ├── fakeTranslate.ts      # 가짜 번역 함수
+│   ├── fakeTours.ts          # 투어 목록
+│   ├── fakeParticipants.ts   # 참여자 목록
+│   ├── fakeMessages.ts       # 메시지 목록
+│   └── fakeUsers.ts          # 사용자 DB (회원 검색용)
+│
+├── types/                    # TypeScript 타입
+│   └── index.ts              # Tour, Participant, Message 등
+│
+├── contexts/                 # 전역 상태
+│   └── AppContext.tsx        # 통합 Context (User + Tour)
 │
 ├── package.json
-├── vite.config.js
-├── tailwind.config.js
+├── next.config.ts
+├── tailwind.config.ts
+├── tsconfig.json
 └── README.md
 ```
 
@@ -1708,32 +2342,32 @@ tourtalk-mvp0/
 ### 핵심 구현 로직
 
 #### 1. 가짜 번역 함수
-```javascript
-// src/utils/fakeTranslate.js
+```typescript
+// lib/fakeTranslate.ts
 
-import { translations } from '../data/translations';
+import { translations } from './translations';
 
-export const fakeTranslate = async (koreanText, targetLanguage) => {
+export const fakeTranslate = async (koreanText: string, targetLanguage: string): Promise<string> => {
   // 0.5초 딜레이 (번역 중 효과)
   await new Promise(resolve => setTimeout(resolve, 500));
-  
+
   // 미리 준비된 번역 찾기
   const translation = translations.find(t => t.ko === koreanText);
-  
+
   if (translation) {
     return translation[targetLanguage] || translation.en;
   }
-  
+
   // 없으면 원문 반환
   return koreanText;
 };
 ```
 
 #### 2. 회원 검색 함수 (개인정보 보호) 🔒
-```javascript
-// src/utils/searchUser.js
+```typescript
+// lib/fakeUsers.ts
 
-export const searchUserByEmail = (email, userDatabase) => {
+export const searchUserByEmail = (email: string, userDatabase: User[]) => {
   // 입력값 정규화 (소문자, 공백 제거)
   const normalizedEmail = email.trim().toLowerCase();
   
@@ -1789,29 +2423,29 @@ const handleSendMessage = async (messageText) => {
 ```
 
 #### 4. 언어 변경
-```javascript
-// src/context/UserContext.jsx
+```typescript
+// contexts/AppContext.tsx
 
-export const UserContext = createContext();
+export const AppContext = createContext<AppContextType | undefined>(undefined);
 
-export const UserProvider = ({ children }) => {
-  const [language, setLanguage] = useState('ko');
-  const [role, setRole] = useState(null); // 'guide' | 'tourist'
-  
-  const changeLanguage = (newLang) => {
+export const AppProvider = ({ children }: { children: React.ReactNode }) => {
+  const [language, setLanguage] = useState<Language>('ko');
+  const [role, setRole] = useState<'guide' | 'tourist' | null>(null);
+
+  const changeLanguage = (newLang: Language) => {
     setLanguage(newLang);
     // 화면 전체가 새 언어로 변경됨
   };
-  
+
   return (
-    <UserContext.Provider value={{ 
-      language, 
-      changeLanguage, 
-      role, 
-      setRole 
+    <AppContext.Provider value={{
+      language,
+      changeLanguage,
+      role,
+      setRole
     }}>
       {children}
-    </UserContext.Provider>
+    </AppContext.Provider>
   );
 };
 ```
@@ -1822,26 +2456,22 @@ export const UserProvider = ({ children }) => {
 
 #### Phase 1: 환경 설정 (30분)
 ```bash
-# 1. Vite 프로젝트 생성
-npm create vite@latest tourtalk-mvp0 -- --template react
+# 1. Next.js 프로젝트 생성 (TypeScript 포함)
+npx create-next-app@latest tourtalk-mvp0 --typescript --tailwind --app --use-npm
 
 # 2. 의존성 설치
 cd tourtalk-mvp0
-npm install react-router-dom react-hot-toast lucide-react
+npm install react-hot-toast lucide-react react-qr-code
 
-# 3. TailwindCSS 설정
-npm install -D tailwindcss postcss autoprefixer
-npx tailwindcss init -p
-
-# 4. 개발 서버 시작
+# 3. 개발 서버 시작
 npm run dev
 ```
 
 #### Phase 2: 기본 구조 (1시간)
-- [ ] React Router 설정
+- [ ] Next.js App Router 구조 설정
 - [ ] 8개 페이지 생성 (빈 껍데기)
-- [ ] Context API 설정
-- [ ] 기본 레이아웃 컴포넌트
+- [ ] Context API 설정 (AppContext.tsx)
+- [ ] 기본 레이아웃 컴포넌트 (Header, Hamburger)
 
 #### Phase 3: 화면 구현 (3-4시간)
 - [ ] 0️⃣ 로그인 화면
