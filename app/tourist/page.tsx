@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import toast from "react-hot-toast";
 import { useApp } from "@/contexts/AppContext";
-import { fakeTours } from "@/lib/mockData";
+import { fakeTours, getTourName } from "@/lib/mockData";
 import type { Tour } from "@/types";
 import { t, replaceName } from "@/lib/i18n";
 import { Button } from "@/components/ui/Button";
@@ -112,7 +112,7 @@ export default function TouristJoinPage() {
               {myTours.map((tour) => (
                 <Card key={tour.id} className="flex items-center justify-between">
                   <div>
-                    <p className="font-bold">{tour.name}</p>
+                    <p className="font-bold">{getTourName(tour, language)}</p>
                     <p className="text-sm text-gray-600">{tr.guide}: {tour.guideName}</p>
                   </div>
                   <Link href={`/tourist/tour/${tour.id}`}>
@@ -130,7 +130,7 @@ export default function TouristJoinPage() {
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40">
           <div className="bg-white rounded-2xl shadow-xl max-w-sm w-full p-6">
             <h3 className="text-lg font-bold mb-4">{tr.tourInfo}</h3>
-            <p className="font-bold text-xl mb-1">{selectedTour.name}</p>
+            <p className="font-bold text-xl mb-1">{getTourName(selectedTour, language)}</p>
             <p className="text-sm text-gray-600 mb-4">{tr.guide}: {selectedTour.guideName}</p>
             <p className="text-sm">📅 {selectedTour.date}</p>
             <p className="text-sm">🕐 {selectedTour.startTime} {tr.time}</p>
