@@ -57,16 +57,19 @@ export default function TouristMainPage() {
     toast.success(common.playComplete, { id: "play" });
   };
 
-  const handleSendMessage = async (text: string) => {
+  const handleSendMessage = async (presetIndex: number) => {
     if (sending) return;
     setSending(true);
     toast.loading(common.sending, { id: "send-tourist-msg" });
-    await new Promise((r) => setTimeout(r, 2000));
+    await new Promise((r) => setTimeout(r, 1000));
 
-    // 메시지 번역
+    const preset = quickRequestPresets[presetIndex];
+    const koreanText = preset.ko;
+
+    // 메시지 번역 - preset 객체 사용
     const translatedTexts: Record<string, string> = {};
     for (const lang of LANG_CODES) {
-      translatedTexts[lang] = fakeTranslate(text, lang);
+      translatedTexts[lang] = (preset[lang as keyof typeof preset] as string) || preset.en || koreanText;
     }
 
     // 메시지 객체 생성
@@ -76,10 +79,10 @@ export default function TouristMainPage() {
       senderId: "tourist1",
       senderName: userName || "Tourist",
       senderRole: "tourist",
-      originalText: text,
+      originalText: koreanText,
       translatedTexts,
       timestamp: new Date().toISOString(),
-      isEmergency: text.includes("🆘"),
+      isEmergency: presetIndex === 5, // "🙋 도와주세요"
     };
 
     addTourMessage(id, msg);
@@ -120,14 +123,14 @@ export default function TouristMainPage() {
           </Link>
           <Button
             variant="outline"
-            onClick={() => handleSendMessage(quickRequestPresets[1].ko)}
+            onClick={() => handleSendMessage(1)}
             disabled={sending}
           >
             📷 {tr.photo}
           </Button>
           <Button
             variant="outline"
-            onClick={() => handleSendMessage(quickRequestPresets[3].ko)}
+            onClick={() => handleSendMessage(3)}
             disabled={sending}
           >
             💬 {tr.more}
@@ -137,7 +140,7 @@ export default function TouristMainPage() {
           <Button
             variant="danger"
             size="lg"
-            onClick={() => handleSendMessage(quickRequestPresets[5].ko)}
+            onClick={() => handleSendMessage(5)}
             disabled={sending}
           >
             🆘 {tr.emergency}

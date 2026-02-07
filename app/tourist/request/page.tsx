@@ -47,12 +47,12 @@ function QuickRequestContent() {
     const koreanText = preset.ko;
     setSending(true);
     toast.loading(common.sending, { id: "req" });
-    await new Promise((r) => setTimeout(r, 2000));
+    await new Promise((r) => setTimeout(r, 1000));
 
-    // 메시지 번역
+    // 메시지 번역 - preset 객체 사용
     const translatedTexts: Record<string, string> = {};
     for (const lang of LANG_CODES) {
-      translatedTexts[lang] = fakeTranslate(koreanText, lang);
+      translatedTexts[lang] = (preset[lang as keyof typeof preset] as string) || preset.en || koreanText;
     }
 
     // 메시지 객체 생성
@@ -79,7 +79,7 @@ function QuickRequestContent() {
     const text = customText.trim();
     setSending(true);
     toast.loading(common.sending, { id: "req" });
-    await new Promise((r) => setTimeout(r, 2000));
+    await new Promise((r) => setTimeout(r, 1000));
 
     // 메시지 번역
     const translatedTexts: Record<string, string> = {};
