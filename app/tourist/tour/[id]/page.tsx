@@ -29,14 +29,16 @@ function loadGuideTours(): Tour[] {
 export default function TouristMainPage() {
   const params = useParams();
   const id = params.id as string;
-  const { language, tourMessages, addTourMessage, userName } = useApp();
+  const { language, tourMessages, addTourMessage, userName, emergencyContacts } = useApp();
   const tr = t(language).tourist;
   const common = t(language).common;
+  const emergencyTr = t(language).emergency;
   const [playingId, setPlayingId] = useState<string | null>(null);
   const [guideTours, setGuideTours] = useState<Tour[]>([]);
   const [sending, setSending] = useState(false);
   const [showPlayingPopup, setShowPlayingPopup] = useState(false);
   const [playingDots, setPlayingDots] = useState(1);
+  const [showEmergencyModal, setShowEmergencyModal] = useState(false);
 
   useEffect(() => {
     setGuideTours(loadGuideTours());
@@ -106,6 +108,15 @@ export default function TouristMainPage() {
     toast.success(common.messageSent, { id: "send-tourist-msg" });
   };
 
+  const handleEmergencySend = async () => {
+    setSending(true);
+    toast.loading(common.sending, { id: "emergency" });
+    await new Promise((r) => setTimeout(r, 1000));
+    toast.success(common.emergencySent, { id: "emergency" });
+    setSending(false);
+    setShowEmergencyModal(false);
+  };
+
   if (!tour) {
     return (
       <>
@@ -138,6 +149,37 @@ export default function TouristMainPage() {
             >
               {common.exit}
             </Button>
+          </div>
+        </div>
+      )}
+      {/* 긴급 알림 팝업 */}
+      {showEmergencyModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40">
+          <div className="bg-white rounded-2xl shadow-xl max-w-sm w-full p-6">
+            <h3 className="text-lg font-bold mb-4">⚠️ 긴급 알림</h3>
+            <p className="text-gray-600 mb-4">긴급 알림을 보내시겠습니까?</p>
+            <p className="text-sm font-medium text-gray-700 mb-2">📱 알림 대상:</p>
+            <ul className="text-sm text-gray-600 mb-4">
+              {emergencyContacts.length > 0 ? (
+                emergencyContacts.map((c) => (
+                  <li key={c.id}>• {c.name} ({c.isMember ? "✅ 앱 푸시" : "📧 이메일"})</li>
+                ))
+              ) : (
+                <li>등록된 연락처 없음</li>
+              )}
+              <li>• 가이드</li>
+            </ul>
+            <p className="text-xs text-gray-500 mb-4">
+              📍 현재 위치 정보와 투어 정보가 함께 전송됩니다
+            </p>
+            <div className="flex gap-2">
+              <Button variant="ghost" fullWidth onClick={() => setShowEmergencyModal(false)}>
+                {emergencyTr.cancel}
+              </Button>
+              <Button variant="danger" fullWidth onClick={handleEmergencySend} disabled={sending}>
+                🚨 전송
+              </Button>
+            </div>
           </div>
         </div>
       )}
@@ -177,7 +219,7 @@ export default function TouristMainPage() {
           <Button
             variant="danger"
             size="lg"
-            onClick={() => handleSendMessage(5)}
+            onClick={() => setShowEmergencyModal(true)}
             disabled={sending}
           >
             🆘 {tr.emergency}
