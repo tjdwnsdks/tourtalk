@@ -4,8 +4,9 @@ import { useParams, useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import toast from "react-hot-toast";
+import { Settings, AlertCircle, Mic, Users, MessageSquare, BarChart3, Circle } from "lucide-react";
 import { useApp } from "@/contexts/AppContext";
-import { fakeTours, getParticipantsForTour, guideQuickMessages, fakeTranslate } from "@/lib/mockData";
+import { fakeTours, getParticipantsForTour, guideQuickMessages, fakeTranslate, getTourName } from "@/lib/mockData";
 import { getRelativeTime } from "@/lib/utils";
 import type { Message } from "@/types";
 import type { LanguageCode } from "@/types";
@@ -170,14 +171,14 @@ export default function GuideTourManagePage() {
         </div>
       )}
       <Header
-        title={`${tour.name} (#${tour.id})`}
+        title={`${getTourName(tour, language)} (#${tour.id})`}
         showBack
         backHref="/guide"
         right={
           <>
             <span className="text-red-500 text-sm font-medium">🔴 LIVE</span>
-            <span>⚙️</span>
-            <span>🆘</span>
+            <Settings className="w-5 h-5 text-gray-600" />
+            <AlertCircle className="w-5 h-5 text-red-500" />
           </>
         }
       />
@@ -186,29 +187,32 @@ export default function GuideTourManagePage() {
           <button
             type="button"
             onClick={() => setTab("message")}
-            className={`px-4 py-2 rounded-t-lg font-medium ${
+            className={`px-4 py-2 rounded-t-lg font-medium flex items-center gap-1 ${
               tab === "message" ? "bg-blue-50 text-blue-700 border-b-2 border-blue-600" : "text-gray-600"
             }`}
           >
-            💬 {tr.message}
+            <MessageSquare className="w-5 h-5" />
+            {tr.message}
           </button>
           <button
             type="button"
             onClick={() => setTab("participants")}
-            className={`px-4 py-2 rounded-t-lg font-medium ${
+            className={`px-4 py-2 rounded-t-lg font-medium flex items-center gap-1 ${
               tab === "participants" ? "bg-blue-50 text-blue-700 border-b-2 border-blue-600" : "text-gray-600"
             }`}
           >
-            👥 {tr.participants}
+            <Users className="w-5 h-5" />
+            {tr.participants}
           </button>
           <button
             type="button"
             onClick={() => setTab("stats")}
-            className={`px-4 py-2 rounded-t-lg font-medium ${
+            className={`px-4 py-2 rounded-t-lg font-medium flex items-center gap-1 ${
               tab === "stats" ? "bg-blue-50 text-blue-700 border-b-2 border-blue-600" : "text-gray-600"
             }`}
           >
-            📊 {tr.stats}
+            <BarChart3 className="w-5 h-5" />
+            {tr.stats}
           </button>
         </div>
 
@@ -222,7 +226,8 @@ export default function GuideTourManagePage() {
             </p>
             <div className="mb-4">
               <Button variant="outline" fullWidth className="mb-2" onClick={handleVoiceGuide}>
-                🎤 {tr.voiceGuide}
+                <Mic className="w-4 h-4 inline mr-1" />
+                {tr.voiceGuide}
               </Button>
               <div className="flex gap-2">
                 <Input
@@ -309,11 +314,11 @@ export default function GuideTourManagePage() {
                   <div className="space-y-1 pl-2">
                     {list.map((p) => (
                       <Card key={p.id} className="flex items-center justify-between py-2">
-                        <div>
-                          <span>{p.isOnline ? "🟢" : "🔴"}</span>
-                          <span className="ml-2">{p.name}</span>
+                        <div className="flex items-center gap-2">
+                          <Circle className={`w-3 h-3 ${p.isOnline ? "fill-green-500 text-green-500" : "fill-gray-300 text-gray-300"}`} />
+                          <span>{p.name}</span>
                           {!p.isOnline && (
-                            <span className="text-xs text-gray-500 ml-1">(오프라인)</span>
+                            <span className="text-xs text-gray-500">(오프라인)</span>
                           )}
                         </div>
                         <div className="flex gap-1">

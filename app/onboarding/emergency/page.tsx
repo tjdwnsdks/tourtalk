@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { Search, Plus, Edit, X } from "lucide-react";
 import { useApp } from "@/contexts/AppContext";
 import { searchUserByEmail } from "@/lib/utils";
 import { fakeParticipants } from "@/lib/mockData";
@@ -17,6 +18,20 @@ const MAX_CONTACTS = 5;
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 function isValidEmail(value: string): boolean {
   return EMAIL_REGEX.test(value.trim());
+}
+
+// 이메일 중복 체크 함수 (대소문자 구분 없음)
+function isDuplicateEmail(
+  email: string,
+  contacts: EmergencyContact[],
+  excludeId?: string
+): boolean {
+  const normalizedEmail = email.trim().toLowerCase();
+  return contacts.some(
+    (contact) =>
+      contact.email.toLowerCase() === normalizedEmail &&
+      contact.id !== excludeId
+  );
 }
 
 export default function EmergencyPage() {
@@ -68,6 +83,13 @@ export default function EmergencyPage() {
 
   const handleAddFromSearch = (user: { id: string; name: string; email: string; isMember: boolean }) => {
     if (emergencyContacts.length >= MAX_CONTACTS) return;
+
+    // 중복 체크 추가
+    if (isDuplicateEmail(user.email, emergencyContacts)) {
+      setSearchEmailError("이미 등록된 이메일입니다.");
+      return;
+    }
+
     const newContact: EmergencyContact = {
       id: user.id,
       name: user.name,
@@ -90,6 +112,13 @@ export default function EmergencyPage() {
       setAddEmailError("올바른 이메일 형식을 입력해주세요.");
       return;
     }
+
+    // 중복 체크 추가
+    if (isDuplicateEmail(addEmail, emergencyContacts)) {
+      setAddEmailError("이미 등록된 이메일입니다.");
+      return;
+    }
+
     setAddEmailError("");
     const newContact: EmergencyContact = {
       id: `direct-${Date.now()}`,
@@ -140,6 +169,12 @@ export default function EmergencyPage() {
       return;
     }
 
+    // 중복 체크 추가 (자기 자신은 제외)
+    if (isDuplicateEmail(editEmail, emergencyContacts, editingId || undefined)) {
+      setEditEmailError("이미 등록된 이메일입니다.");
+      return;
+    }
+
     setEditEmailError("");
 
     // 연락처 배열 업데이트 (map으로 해당 항목만 수정)
@@ -159,26 +194,24 @@ export default function EmergencyPage() {
     handleCancelEdit();
   };
 
+  // 라우팅 로직을 공통 함수로 추출
+  const getNextRoute = () => {
+    if (onboardingDone) {
+      // 설정 수정 모드: 역할에 따라 메인 페이지로 이동
+      if (role === "guide") return "/guide";
+      if (role === "tourist") return "/tourist";
+      return "/";
+    }
+    // 온보딩 모드
+    return "/onboarding/role";
+  };
+
   const handleDone = () => {
     if (emergencyContacts.length === 0) {
       setShowEmptyWarning(true);
       return;
     }
-
-    // 온보딩 완료 여부에 따라 분기
-    if (onboardingDone) {
-      // 설정 수정 모드: 역할에 따라 메인 페이지로 이동
-      if (role === "guide") {
-        router.push("/guide");
-      } else if (role === "tourist") {
-        router.push("/tourist");
-      } else {
-        router.push("/");
-      }
-    } else {
-      // 온보딩 모드
-      router.push("/onboarding/role");
-    }
+    router.push(getNextRoute());
   };
 
   return (
@@ -186,7 +219,7 @@ export default function EmergencyPage() {
       <Header
         title={tr.title}
         showBack
-        backHref={onboardingDone ? (role === "guide" ? "/guide" : "/tourist") : "/onboarding/profile"}
+        backHref={onboardingDone ? (role === "guide" ? "/guide" : role === "tourist" ? "/tourist" : "/") : "/onboarding/profile"}
       />
       <main className="p-4 max-w-lg mx-auto">
         <p className="text-gray-600 mb-6">🆘 {tr.subtitle}</p>
@@ -205,7 +238,9 @@ export default function EmergencyPage() {
               type="email"
               error={searchEmailError || undefined}
             />
-            <Button variant="primary" onClick={handleSearch}>🔍</Button>
+            <Button variant="primary" onClick={handleSearch}>
+              <Search className="w-4 h-4" />
+            </Button>
           </div>
           <p className="text-xs text-gray-500">💡 {tr.searchHint}</p>
           {searchResult && (
@@ -233,7 +268,8 @@ export default function EmergencyPage() {
             setShowAddForm(true);
             setEditingId(null); // 수정 모드 닫기
           }} className="mb-6">
-            ➕ {tr.addEmail}
+            <Plus className="w-4 h-4 inline mr-1" />
+            {tr.addEmail}
           </Button>
         ) : (
           <Card className="mb-6 space-y-3">
@@ -313,10 +349,10 @@ export default function EmergencyPage() {
                   </div>
                   <div className="flex gap-1">
                     <Button variant="ghost" size="sm" onClick={() => handleStartEdit(c)}>
-                      ✏️
+                      <Edit className="w-4 h-4" />
                     </Button>
                     <Button variant="ghost" size="sm" onClick={() => handleRemove(c.id)}>
-                      ×
+                      <X className="w-4 h-4" />
                     </Button>
                   </div>
                 </Card>
@@ -329,21 +365,7 @@ export default function EmergencyPage() {
           <Button
             variant="ghost"
             className="flex-1 min-w-0 !bg-[#ebebeb] hover:!bg-[#e0e0e0]"
-            onClick={() => {
-              if (onboardingDone) {
-                // 설정 수정 모드: 역할에 따라 메인 페이지로 이동
-                if (role === "guide") {
-                  router.push("/guide");
-                } else if (role === "tourist") {
-                  router.push("/tourist");
-                } else {
-                  router.push("/");
-                }
-              } else {
-                // 온보딩 모드
-                router.push("/onboarding/role");
-              }
-            }}
+            onClick={() => router.push(getNextRoute())}
           >
             {tr.later}
           </Button>

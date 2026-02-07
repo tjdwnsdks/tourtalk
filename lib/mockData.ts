@@ -109,6 +109,30 @@ export const translationPhrases: Record<string, Record<string, string>> = {
   },
 };
 
+/** 투어 제목 번역 데이터 */
+export const tourNameTranslations: Record<string, Record<LanguageCode, string>> = {
+  "경복궁 오전 투어": {
+    ko: "경복궁 오전 투어",
+    en: "Gyeongbokgung Morning Tour",
+    vi: "Tour buổi sáng Gyeongbokgung",
+    "zh-CN": "景福宫上午游",
+    "zh-TW": "景福宮上午遊",
+    ja: "景福宮午前ツアー",
+    th: "ทัวร์เช้าพระราชวังเคียงบกกุง",
+    id: "Tur pagi Gyeongbokgung",
+  },
+  "남산타워 야경 투어": {
+    ko: "남산타워 야경 투어",
+    en: "Namsan Tower Night View Tour",
+    vi: "Tour cảnh đêm tháp Namsan",
+    "zh-CN": "南山塔夜景游",
+    "zh-TW": "南山塔夜景遊",
+    ja: "南山タワー夜景ツアー",
+    th: "ทัวร์ชมวิวกลางคืนหอคอยนัมซาน",
+    id: "Tur pemandangan malam Menara Namsan",
+  },
+};
+
 /** 가짜 번역: 한국어 원문 → 대상 언어 (미리 준비된 문구만) */
 export function fakeTranslate(
   koreanText: string,
@@ -198,6 +222,7 @@ export const fakeTours: Tour[] = [
   {
     id: "A1234",
     name: "경복궁 오전 투어",
+    nameTranslations: tourNameTranslations["경복궁 오전 투어"],
     guideId: "guide1",
     guideName: "김민수",
     date: "2025-02-10",
@@ -210,6 +235,7 @@ export const fakeTours: Tour[] = [
   {
     id: "B5678",
     name: "남산타워 야경 투어",
+    nameTranslations: tourNameTranslations["남산타워 야경 투어"],
     guideId: "guide1",
     guideName: "김민수",
     date: "2025-02-10",
@@ -265,3 +291,16 @@ export const fakeUserDatabase = [
   { id: "u1", name: "Kim Young-hee", email: "kim@email.com", isMember: true },
   { id: "u2", name: "김엄마", email: "mom@email.com", isMember: true },
 ];
+
+/**
+ * 투어 이름을 현재 언어로 번역
+ */
+export function getTourName(tour: Tour, language: LanguageCode): string {
+  if (tour.nameTranslations && tour.nameTranslations[language]) {
+    return tour.nameTranslations[language];
+  }
+  if (tour.nameTranslations && tour.nameTranslations.en) {
+    return tour.nameTranslations.en;  // 영어 fallback
+  }
+  return tour.name;  // 번역 없으면 기본 이름
+}

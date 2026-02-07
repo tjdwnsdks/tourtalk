@@ -6,7 +6,8 @@ export type TourStatus = "active" | "waiting" | "completed";
 
 export interface Tour {
   id: string;
-  name: string;
+  name: string;  // 기본 언어 제목 (하위 호환성 유지)
+  nameTranslations?: Record<LanguageCode, string>;  // 다국어 번역 추가
   date: string;
   startTime: string;
   maxParticipants: number;
