@@ -1,8 +1,7 @@
 "use client";
 
-import { Suspense } from "react";
+import { Suspense, useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useState } from "react";
 import toast from "react-hot-toast";
 import { useApp } from "@/contexts/AppContext";
 import { quickRequestPresets, fakeTranslate } from "@/lib/mockData";
@@ -33,9 +32,12 @@ function QuickRequestContent() {
   const { language, emergencyContacts, addTourMessage, userName } = useApp();
   const tr = t(language).tourist;
   const common = t(language).common;
+  const emergencyTr = t(language).emergency;
   const [customText, setCustomText] = useState("");
   const [showEmergencyModal, setShowEmergencyModal] = useState(false);
   const [sending, setSending] = useState(false);
+  const [showRecordingPopup, setShowRecordingPopup] = useState(false);
+  const [recordingDots, setRecordingDots] = useState(1);
 
   const presetLabel = (preset: (typeof quickRequestPresets)[0]) => {
     const key = LANG_MAP[language] ?? "en";
@@ -117,8 +119,80 @@ function QuickRequestContent() {
     if (tourId) router.push(`/tourist/tour/${tourId}`);
   };
 
+  /** 녹음 버튼 클릭 - 녹음중 팝업 표시 */
+  const handleVoiceRecord = () => {
+    setRecordingDots(1);
+    setShowRecordingPopup(true);
+    // TODO: 실제 녹음 API 연동
+  };
+
+  /** 녹음 팝업 닫기 - 녹음된 메시지 전송 후 이전 화면으로 이동 */
+  const handleCloseRecording = async () => {
+    if (!tourId) return;
+
+    setSending(true);
+    toast.loading(common.sending, { id: "voice-msg" });
+    await new Promise((r) => setTimeout(r, 1000));
+
+    // 녹음된 메시지 생성
+    const koreanText = "녹음된 메시지";
+    const translatedTexts: Record<string, string> = {};
+    for (const lang of LANG_CODES) {
+      translatedTexts[lang] = fakeTranslate(koreanText, lang);
+    }
+
+    // 메시지 객체 생성
+    const msg: Message = {
+      id: `msg-tourist-voice-${Date.now()}`,
+      tourId: tourId,
+      senderId: "tourist1",
+      senderName: userName || "Tourist",
+      senderRole: "tourist",
+      originalText: koreanText,
+      translatedTexts,
+      timestamp: new Date().toISOString(),
+      isEmergency: false,
+    };
+
+    addTourMessage(tourId, msg);
+    toast.success(common.messageSent, { id: "voice-msg" });
+    setSending(false);
+    setShowRecordingPopup(false);
+    router.push(`/tourist/tour/${tourId}`);
+  };
+
+  /** 녹음중 팝업 표시 중일 때 마침표 1 → 2 → 3 → 1 반복 애니메이션 */
+  useEffect(() => {
+    if (!showRecordingPopup) return;
+    const interval = setInterval(() => {
+      setRecordingDots((prev) => (prev >= 3 ? 1 : prev + 1));
+    }, 400);
+    return () => clearInterval(interval);
+  }, [showRecordingPopup]);
+
   return (
     <>
+      {/* 녹음중 팝업: 완료 버튼 클릭 시에만 닫히고 이전 화면으로 이동 */}
+      {showRecordingPopup && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30">
+          <div
+            className="w-[70%] max-w-[300px] aspect-square flex flex-col items-center justify-center gap-3 rounded-2xl bg-white shadow-xl p-4"
+          >
+            <span className="text-4xl" aria-hidden>🎤</span>
+            <p className="text-lg font-medium text-gray-800 min-w-[4em] text-center flex-1 flex items-center justify-center">
+              {common.recording.replace(/\.+$/, "")}
+              {".".repeat(recordingDots)}
+            </p>
+            <Button
+              variant="primary"
+              className="w-full mt-auto"
+              onClick={handleCloseRecording}
+            >
+              {emergencyTr.done}
+            </Button>
+          </div>
+        </div>
+      )}
       <Header title={tr.quickRequest} showBack backHref={tourId ? `/tourist/tour/${tourId}` : "/tourist"} />
       <main className="p-4 max-w-lg mx-auto">
         <p className="text-sm font-medium text-gray-700 mb-4">{tr.frequentRequests}</p>
@@ -136,18 +210,26 @@ function QuickRequestContent() {
         </div>
 
         <p className="text-sm font-medium text-gray-700 mb-2">{tr.customInput}</p>
-        <div className="flex gap-2 mb-6">
+        <div className="flex gap-2 mb-4">
           <Input
             placeholder=""
             value={customText}
             onChange={(e) => setCustomText(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && handleCustomSend()}
           />
-          <Button variant="ghost" size="sm">🎤</Button>
-          <Button variant="primary" onClick={handleCustomSend} disabled={sending || !customText.trim()}>
+          <Button variant="primary" onClick={handleCustomSend} disabled={sending || !customText.trim()}  className="!min-w-[80px]">
             {tr.send}
           </Button>
         </div>
+
+        <Button
+          fullWidth
+          variant="outline"
+          className="mb-6"
+          onClick={handleVoiceRecord}
+        >
+          🎤 {common.recording.replace(/\.+$/, "")}
+        </Button>
 
         <Button
           fullWidth

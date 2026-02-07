@@ -35,6 +35,8 @@ export default function TouristMainPage() {
   const [playingId, setPlayingId] = useState<string | null>(null);
   const [guideTours, setGuideTours] = useState<Tour[]>([]);
   const [sending, setSending] = useState(false);
+  const [showPlayingPopup, setShowPlayingPopup] = useState(false);
+  const [playingDots, setPlayingDots] = useState(1);
 
   useEffect(() => {
     setGuideTours(loadGuideTours());
@@ -51,11 +53,25 @@ export default function TouristMainPage() {
 
   const handlePlay = async (msgId: string) => {
     setPlayingId(msgId);
-    toast.loading(common.playing, { id: "play" });
-    await new Promise((r) => setTimeout(r, 2000));
-    setPlayingId(null);
-    toast.success(common.playComplete, { id: "play" });
+    setPlayingDots(1);
+    setShowPlayingPopup(true);
+    // TODO: 실제 TTS API 연동 시 음성 재생
   };
+
+  /** 재생 팝업 닫기 */
+  const handleClosePlayingPopup = () => {
+    setShowPlayingPopup(false);
+    setPlayingId(null);
+  };
+
+  /** 재생 중 팝업 표시 중일 때 마침표 1 → 2 → 3 → 1 반복 애니메이션 */
+  useEffect(() => {
+    if (!showPlayingPopup) return;
+    const interval = setInterval(() => {
+      setPlayingDots((prev) => (prev >= 3 ? 1 : prev + 1));
+    }, 400);
+    return () => clearInterval(interval);
+  }, [showPlayingPopup]);
 
   const handleSendMessage = async (presetIndex: number) => {
     if (sending) return;
@@ -104,10 +120,31 @@ export default function TouristMainPage() {
 
   return (
     <>
+      {/* 재생 중 팝업: 나가기 버튼 클릭 시에만 닫힘 */}
+      {showPlayingPopup && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30">
+          <div
+            className="w-[70%] max-w-[300px] aspect-square flex flex-col items-center justify-center gap-3 rounded-2xl bg-white shadow-xl p-4"
+          >
+            <span className="text-4xl" aria-hidden>🔊</span>
+            <p className="text-lg font-medium text-gray-800 min-w-[4em] text-center flex-1 flex items-center justify-center">
+              {common.playing.replace(/\.+$/, "")}
+              {".".repeat(playingDots)}
+            </p>
+            <Button
+              variant="primary"
+              className="w-full mt-auto"
+              onClick={handleClosePlayingPopup}
+            >
+              {common.exit}
+            </Button>
+          </div>
+        </div>
+      )}
       <Header
         title={`${getTourName(tour, language)} (#${tour.id})`}
         showBack
-        backHref="/tourist" 
+        backHref="/tourist"
       />
       <main className="p-4 max-w-lg mx-auto">
         <div className="flex items-center gap-2 mb-4 pb-2 border-b border-gray-200">
