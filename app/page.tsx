@@ -33,6 +33,7 @@ export default function LoginPage() {
           alt={tr.title}
           className="aspect-[5/4] max-h-[320px] w-auto object-contain mb-[50px] mx-auto"
           priority
+          placeholder="blur"
         />
         {/* <p className="text-lg text-gray-600">🌏 🗣️ 💬</p> */}
         {/* <p className="text-base text-gray-600 mt-2">{tr.subtitle}</p>

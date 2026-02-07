@@ -18,7 +18,9 @@
       "Bash(xargs:*)",
       "Bash(git remote add:*)",
       "Bash(git push:*)",
-      "Bash(npx tsc:*)"
+      "Bash(npx tsc:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)"
     ]
   }
 }

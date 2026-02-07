@@ -48,7 +48,8 @@ export default function ProfilePage() {
       } else if (role === "tourist") {
         router.push("/tourist");
       } else {
-        router.push("/");
+        // role이 설정되지 않은 상태 → 역할 선택 페이지로 이동
+        router.push("/onboarding/role");
       }
     } else {
       // 온보딩 모드
@@ -61,7 +62,7 @@ export default function ProfilePage() {
       <Header
         title={tr.welcome}
         showBack
-        backHref={onboardingDone ? (role === "guide" ? "/guide" : "/tourist") : "/"}
+        backHref={onboardingDone ? (role === "guide" ? "/guide" : role === "tourist" ? "/tourist" : "/") : "/"}
       />
       <main className="p-4 max-w-lg mx-auto">
         <p className="text-gray-600 mb-6">{tr.firstTime}</p>
@@ -92,7 +93,7 @@ export default function ProfilePage() {
             <Input
               label={tr.phoneOptional}
               value={phone}
-              onChange={(e) => setPhone(e.target.value)}
+              onChange={(e) => setPhone(e.target.value.replace(/\D/g, ""))}
               placeholder="+82 10-1234-5678"
               type="tel"
               wrapperClassName="mb-0"
@@ -102,8 +103,12 @@ export default function ProfilePage() {
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">{tr.language}</label>
             <select
-              value={selectedLang}
-              onChange={(e) => setSelectedLang(e.target.value as LanguageCode)}
+              value={selectedLang} 
+              onChange={(e) => {
+                const newLang = e.target.value as LanguageCode;
+                setSelectedLang(newLang);
+                setLanguage(newLang);
+              }}
               className="w-full rounded-xl border border-gray-300 px-4 py-3 text-base min-h-[44px]"
             >
               {LANGUAGES.map((lang) => (

@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useApp } from "@/contexts/AppContext";
 import { t } from "@/lib/i18n";
@@ -11,17 +12,26 @@ export default function RolePage() {
   const router = useRouter();
   const { language, setRole, setOnboardingDone, onboardingDone, role } = useApp();
   const tr = t(language).role;
+  const [pendingRoute, setPendingRoute] = useState<string | null>(null);
+
+  // 상태 변경 후 라우팅 처리
+  useEffect(() => {
+    if (pendingRoute && role) {
+      router.push(pendingRoute);
+      setPendingRoute(null);
+    }
+  }, [role, pendingRoute, router]);
 
   const handleGuide = () => {
     setRole("guide");
 
     if (onboardingDone) {
       // 설정 변경 모드: Guide 메인으로 이동
-      router.push("/guide");
+      setPendingRoute("/guide");
     } else {
       // 온보딩 모드: 완료 처리하고 Guide 메인으로
       setOnboardingDone(true);
-      router.push("/guide");
+      setPendingRoute("/guide");
     }
   };
 
@@ -30,11 +40,11 @@ export default function RolePage() {
 
     if (onboardingDone) {
       // 설정 변경 모드: Tourist 메인으로 이동
-      router.push("/tourist");
+      setPendingRoute("/tourist");
     } else {
       // 온보딩 모드: 완료 처리하고 Tourist 메인으로
       setOnboardingDone(true);
-      router.push("/tourist");
+      setPendingRoute("/tourist");
     }
   };
 
@@ -43,7 +53,7 @@ export default function RolePage() {
       <Header
         title="TourTalk"
         showBack
-        backHref={onboardingDone ? (role === "guide" ? "/guide" : "/tourist") : "/onboarding/emergency"}
+        backHref={onboardingDone ? (role === "guide" ? "/guide" : role === "tourist" ? "/tourist" : "/") : "/onboarding/emergency"}
       />
       <main className="p-4 max-w-lg mx-auto">
         <h2 className="text-xl font-bold text-center mb-6">{tr.howToUse}</h2>
