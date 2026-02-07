@@ -6,6 +6,12 @@ import { t } from "@/lib/i18n";
 import { GoogleLogo } from "@/components/ui/GoogleLogo";
 import { KakaoLogo } from "@/components/ui/KakaoLogo";
 
+import Image from "next/image";
+import logoImg from "../logo.png";
+// import logoImg from "../logo_bg.png";
+
+
+
 export default function LoginPage() {
   const router = useRouter();
   const { language, setUserName } = useApp();
@@ -21,8 +27,14 @@ export default function LoginPage() {
   return (
     <main className="min-h-screen flex flex-col items-center justify-center px-6 pb-12">
       <div className="text-center mb-[50px]" id="title-box">
-        <h1 className="text-4xl font-bold text-gray-900 mb-[50px]">{tr.title}</h1>
-        <p className="text-lg text-gray-600">🌏 🗣️ 💬</p>
+        {/* <h1 className="text-4xl font-bold text-gray-900 mb-[50px]">{tr.title}</h1> */}
+        <Image
+          src={logoImg}
+          alt={tr.title}
+          className="aspect-[5/4] max-h-[280px] w-auto object-contain mb-[50px] mx-auto"
+          priority
+        />
+        {/* <p className="text-lg text-gray-600">🌏 🗣️ 💬</p> */}
         <p className="text-base text-gray-600 mt-2">{tr.subtitle}</p>
         <p className="text-base text-gray-600">{tr.tagline}</p>
       </div>
