@@ -15,7 +15,10 @@
       "Bash(taskkill:*)",
       "Bash(if exist \".next\\\\dev\\\\lock\" del /F \".next\\\\dev\\\\lock\")",
       "Bash(curl:*)",
-      "Bash(xargs:*)"
+      "Bash(xargs:*)",
+      "Bash(git remote add:*)",
+      "Bash(git push:*)",
+      "Bash(npx tsc:*)"
     ]
   }
 }

@@ -1,6 +1,8 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useApp } from "@/contexts/AppContext";
 import { Hamburger } from "./Hamburger";
 import { LanguageSelector } from "./LanguageSelector";
 
@@ -12,6 +14,19 @@ type HeaderProps = {
 };
 
 export function Header({ title = "TourTalk", showBack, backHref = "/", right }: HeaderProps) {
+  const router = useRouter();
+  const { role } = useApp();
+
+  const handleLogoClick = () => {
+    if (role === "guide") {
+      router.push("/guide");
+    } else if (role === "tourist") {
+      router.push("/tourist");
+    } else {
+      router.push("/");
+    }
+  };
+
   return (
     <header className="sticky top-0 z-30 flex items-center justify-between h-14 px-4 border-b border-gray-200 bg-white">
       <div className="flex items-center gap-2 min-w-0">
@@ -28,7 +43,21 @@ export function Header({ title = "TourTalk", showBack, backHref = "/", right }: 
         ) : (
           <Hamburger />
         )}
-        <h1 className="font-bold text-lg truncate">{title}</h1>
+        <h1
+          className="font-bold text-lg truncate cursor-pointer hover:opacity-70 active:opacity-50 transition-opacity focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 rounded"
+          onClick={handleLogoClick}
+          role="button"
+          tabIndex={0}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault();
+              handleLogoClick();
+            }
+          }}
+          aria-label="홈으로 이동"
+        >
+          {title}
+        </h1>
       </div>
       <div className="flex items-center gap-1 shrink-0">
         {right}
