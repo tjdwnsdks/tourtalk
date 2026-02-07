@@ -184,6 +184,9 @@ type Translations = {
     customInput: string;
     send: string;
     emergencyAlert: string;
+    tourNotFound: string;
+    joinTourPage: string;
+    noMessages: string;
   };
   common: {
     back: string;
@@ -362,6 +365,9 @@ export const translations: Record<LanguageCode, Translations> = {
       customInput: "직접 입력하기",
       send: "전송",
       emergencyAlert: "긴급 상황 알리기",
+      tourNotFound: "투어를 찾을 수 없습니다.",
+      joinTourPage: "투어 참여",
+      noMessages: "아직 수신된 메시지가 없습니다. 가이드가 메시지를 보내면 여기에 번역된 내용이 표시됩니다.",
     },
     common: {
       back: "뒤로",
@@ -538,6 +544,9 @@ export const translations: Record<LanguageCode, Translations> = {
       customInput: "Type your own",
       send: "Send",
       emergencyAlert: "Send emergency alert",
+      tourNotFound: "Tour not found.",
+      joinTourPage: "Join Tour",
+      noMessages: "No messages yet. When the guide sends a message, the translated content will appear here.",
     },
     common: {
       back: "Back",
@@ -714,6 +723,9 @@ export const translations: Record<LanguageCode, Translations> = {
       customInput: "Nhập tùy ý",
       send: "Gửi",
       emergencyAlert: "Gửi báo động khẩn cấp",
+      tourNotFound: "Không tìm thấy tour.",
+      joinTourPage: "Tham gia Tour",
+      noMessages: "Chưa có tin nhắn nào. Khi hướng dẫn viên gửi tin nhắn, nội dung dịch sẽ xuất hiện ở đây.",
     },
     common: {
       back: "Quay lại",
@@ -890,6 +902,9 @@ export const translations: Record<LanguageCode, Translations> = {
       customInput: "自定义输入",
       send: "发送",
       emergencyAlert: "发送紧急警报",
+      tourNotFound: "未找到行程。",
+      joinTourPage: "加入行程",
+      noMessages: "暂无消息。导游发送消息后，翻译内容将显示在此处。",
     },
     common: {
       back: "返回",
@@ -1066,6 +1081,9 @@ export const translations: Record<LanguageCode, Translations> = {
       customInput: "自訂輸入",
       send: "傳送",
       emergencyAlert: "發送緊急警報",
+      tourNotFound: "未找到行程。",
+      joinTourPage: "加入行程",
+      noMessages: "暫無訊息。導遊傳送訊息後，翻譯內容將顯示於此。",
     },
     common: {
       back: "返回",
@@ -1242,6 +1260,9 @@ export const translations: Record<LanguageCode, Translations> = {
       customInput: "自由入力",
       send: "送信",
       emergencyAlert: "緊急通知を送る",
+      tourNotFound: "ツアーが見つかりません。",
+      joinTourPage: "ツアー参加",
+      noMessages: "まだメッセージがありません。ガイドがメッセージを送信すると、翻訳された内容がここに表示されます。",
     },
     common: {
       back: "戻る",
@@ -1418,6 +1439,9 @@ export const translations: Record<LanguageCode, Translations> = {
       customInput: "พิมพ์เอง",
       send: "ส่ง",
       emergencyAlert: "ส่งการแจ้งฉุกเฉิน",
+      tourNotFound: "ไม่พบทัวร์",
+      joinTourPage: "เข้าร่วมทัวร์",
+      noMessages: "ยังไม่มีข้อความ เมื่อไกด์ส่งข้อความ เนื้อหาที่แปลแล้วจะปรากฏที่นี่",
     },
     common: {
       back: "กลับ",
@@ -1594,6 +1618,9 @@ export const translations: Record<LanguageCode, Translations> = {
       customInput: "Ketik sendiri",
       send: "Kirim",
       emergencyAlert: "Kirim peringatan darurat",
+      tourNotFound: "Tur tidak ditemukan.",
+      joinTourPage: "Ikut Tur",
+      noMessages: "Belum ada pesan. Saat pemandu mengirim pesan, konten terjemahan akan muncul di sini.",
     },
     common: {
       back: "Kembali",

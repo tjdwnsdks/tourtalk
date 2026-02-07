@@ -69,7 +69,7 @@ export default function TouristJoinPage() {
   };
 
   const handleQRScan = async () => {
-    toast.loading("📷 스캔 중...", { id: "qr" });
+    toast.loading("📷 " + common.loading, { id: "qr" });
     await new Promise((r) => setTimeout(r, 1000));
     toast.success(common.scanComplete, { id: "qr" });
     setSelectedTour(allTours[0]);

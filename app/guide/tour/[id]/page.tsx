@@ -21,6 +21,58 @@ const LANG_CODES: LanguageCode[] = ["ko", "en", "vi", "zh-CN", "zh-TW", "ja", "t
 
 type Tab = "message" | "participants" | "stats";
 
+// 샘플 받은 메시지 다국어 데이터
+const sampleMessages: Record<LanguageCode, { message1: string; reply1: string; message2: string; reply2: string }> = {
+  ko: {
+    message1: "🟡 John: 사진 찍어주세요",
+    reply1: "👍 알겠습니다",
+    message2: "🔴 Nguyen: 화장실 어디?",
+    reply2: "📍 근정전 옆",
+  },
+  en: {
+    message1: "🟡 John: Please take a photo",
+    reply1: "👍 Sure",
+    message2: "🔴 Nguyen: Where is the restroom?",
+    reply2: "📍 Next to Geunjeongjeon",
+  },
+  vi: {
+    message1: "🟡 John: Chụp ảnh giúp tôi",
+    reply1: "👍 Được rồi",
+    message2: "🔴 Nguyen: Nhà vệ sinh ở đâu?",
+    reply2: "📍 Bên cạnh Geunjeongjeon",
+  },
+  "zh-CN": {
+    message1: "🟡 John: 请给我拍照",
+    reply1: "👍 好的",
+    message2: "🔴 Nguyen: 洗手间在哪里？",
+    reply2: "📍 勤政殿旁边",
+  },
+  "zh-TW": {
+    message1: "🟡 John: 請給我拍照",
+    reply1: "👍 好的",
+    message2: "🔴 Nguyen: 洗手間在哪裡？",
+    reply2: "📍 勤政殿旁邊",
+  },
+  ja: {
+    message1: "🟡 John: 写真を撮ってください",
+    reply1: "👍 承知しました",
+    message2: "🔴 Nguyen: トイレはどこですか？",
+    reply2: "📍 勤政殿の隣",
+  },
+  th: {
+    message1: "🟡 John: ช่วยถ่ายรูปให้หน่อย",
+    reply1: "👍 ได้เลย",
+    message2: "🔴 Nguyen: ห้องน้ำอยู่ไหน？",
+    reply2: "📍 ข้างพระที่นั่งกึนจองจอน",
+  },
+  id: {
+    message1: "🟡 John: Tolong fotokan saya",
+    reply1: "👍 Baik",
+    message2: "🔴 Nguyen: Di mana toilet?",
+    reply2: "📍 Di samping Geunjeongjeon",
+  },
+};
+
 export default function GuideTourManagePage() {
   const params = useParams();
   const router = useRouter();
@@ -248,15 +300,15 @@ export default function GuideTourManagePage() {
             </div>
             <p className="text-sm font-medium text-gray-700 mb-2">─── {tr.quickMessages} ───</p>
             <div className="flex flex-wrap gap-2 mb-4">
-              {guideQuickMessages.map((msg) => (
+              {guideQuickMessages.map((msg, idx) => (
                 <Button
-                  key={msg}
+                  key={idx}
                   variant="ghost"
                   size="sm"
-                  onClick={() => handleQuickMessage(msg)}
+                  onClick={() => handleQuickMessage(msg[language] || msg.ko)}
                   disabled={sending}
                 >
-                  {msg}
+                  {msg[language] || msg.ko}
                 </Button>
               ))}
             </div>
@@ -272,20 +324,20 @@ export default function GuideTourManagePage() {
                 </Card>
               ))}
               <Card className="bg-yellow-50 border-yellow-200">
-                <p className="font-medium">🟡 John: 사진 찍어주세요</p>
-                <p className="text-sm text-gray-600">👍 알겠습니다</p>
+                <p className="font-medium">{sampleMessages[language].message1}</p>
+                <p className="text-sm text-gray-600">{sampleMessages[language].reply1}</p>
                 <div className="flex gap-1 mt-1">
-                  <Button variant="ghost" size="sm" onClick={() => handleListen("John: 사진 찍어주세요")}>
+                  <Button variant="ghost" size="sm" onClick={() => handleListen(sampleMessages[language].message1)}>
                     🔊 {touristTr.listen}
                   </Button>
                   <Button variant="ghost" size="sm" onClick={handleVoiceGuide}>{tr.reply}</Button>
                 </div>
               </Card>
               <Card className="bg-red-50 border-red-200">
-                <p className="font-medium">🔴 Nguyen: 화장실 어디?</p>
-                <p className="text-sm text-gray-600">📍 근정전 옆</p>
+                <p className="font-medium">{sampleMessages[language].message2}</p>
+                <p className="text-sm text-gray-600">{sampleMessages[language].reply2}</p>
                 <div className="flex gap-1 mt-1">
-                  <Button variant="ghost" size="sm" onClick={() => handleListen("Nguyen: 화장실 어디?")}>
+                  <Button variant="ghost" size="sm" onClick={() => handleListen(sampleMessages[language].message2)}>
                     🔊 {touristTr.listen}
                   </Button>
                   <Button variant="ghost" size="sm" onClick={handleVoiceGuide}>{tr.reply}</Button>

@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useState, useEffect } from "react";
 import toast from "react-hot-toast";
 import { useApp } from "@/contexts/AppContext";
-import { fakeTours } from "@/lib/mockData";
+import { fakeTours, getTourName } from "@/lib/mockData";
 import { getRelativeTime } from "@/lib/utils";
 import type { Tour } from "@/types";
 import { t } from "@/lib/i18n";
@@ -59,8 +59,8 @@ export default function TouristMainPage() {
       <>
         <Header title="Tour" showBack backHref="/tourist" />
         <main className="p-4">
-          <p>투어를 찾을 수 없습니다.</p>
-          <Link href="/tourist"><Button className="mt-4">투어 참여</Button></Link>
+          <p>{tr.tourNotFound}</p>
+          <Link href="/tourist"><Button className="mt-4">{tr.joinTourPage}</Button></Link>
         </main>
       </>
     );
@@ -69,7 +69,7 @@ export default function TouristMainPage() {
   return (
     <>
       <Header
-        title={`${tour.name} (#${tour.id})`}
+        title={`${getTourName(tour, language)} (#${tour.id})`}
         showBack
         backHref="/tourist"
         right={<><span>⚙️</span><span>🆘</span></>}
@@ -79,12 +79,12 @@ export default function TouristMainPage() {
           <span className="text-lg">🎤</span>
           <span className="font-bold">{tour.guideName}</span>
           <span className="text-green-600">🟢</span>
-          <span className="text-sm text-gray-600">👥 {tour.participants}명</span>
+          <span className="text-sm text-gray-600">👥 {tour.participants} {tr.participantsCount}</span>
         </div>
 
         <div className="space-y-4 mb-6">
           {translatedForMe.length === 0 ? (
-            <p className="text-gray-500 text-sm">아직 수신된 메시지가 없습니다. 가이드가 메시지를 보내면 여기에 번역된 내용이 표시됩니다.</p>
+            <p className="text-gray-500 text-sm">{tr.noMessages}</p>
           ) : (
             translatedForMe.map((m) => (
               <Card key={m.id} className="space-y-2">
