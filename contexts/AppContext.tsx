@@ -30,6 +30,7 @@ type AppState = {
   addTourMessage: (tourId: string, message: Message) => void;
   onboardingDone: boolean;
   setOnboardingDone: (done: boolean) => void;
+  logout: () => void;
 };
 
 const defaultLanguage: LanguageCode = "ko";
@@ -129,6 +130,30 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     saveStorage(COMPLETED_ONBOARDING, done);
   }, []);
 
+  const logout = useCallback(() => {
+    // 모든 localStorage 데이터 초기화
+    if (typeof window !== "undefined") {
+      localStorage.removeItem(LANGUAGE_KEY);
+      localStorage.removeItem(ROLE_KEY);
+      localStorage.removeItem(USER_NAME_KEY);
+      localStorage.removeItem(EMERGENCY_KEY);
+      localStorage.removeItem(TOURS_KEY);
+      localStorage.removeItem(GUIDE_TOURS_KEY);
+      localStorage.removeItem(TOUR_MESSAGES_KEY);
+      localStorage.removeItem(COMPLETED_ONBOARDING);
+    }
+
+    // 상태 초기화
+    setLanguageState(defaultLanguage);
+    setRoleState(null);
+    setUserNameState("");
+    setEmergencyContactsState([]);
+    setMyTourIds([]);
+    setGuideTours([]);
+    setTourMessages({});
+    setOnboardingDoneState(false);
+  }, []);
+
   const value: AppState = {
     language,
     setLanguage,
@@ -146,6 +171,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     addTourMessage,
     onboardingDone,
     setOnboardingDone,
+    logout,
   };
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;

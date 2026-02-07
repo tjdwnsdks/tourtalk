@@ -16,8 +16,8 @@ export default function RolePage() {
     setRole("guide");
 
     if (onboardingDone) {
-      // 설정 변경 모드: 역할만 변경하고 돌아가기
-      router.back();
+      // 설정 변경 모드: Guide 메인으로 이동
+      router.push("/guide");
     } else {
       // 온보딩 모드: 완료 처리하고 Guide 메인으로
       setOnboardingDone(true);
@@ -29,8 +29,10 @@ export default function RolePage() {
     setRole("tourist");
 
     if (onboardingDone) {
-      router.back();
+      // 설정 변경 모드: Tourist 메인으로 이동
+      router.push("/tourist");
     } else {
+      // 온보딩 모드: 완료 처리하고 Tourist 메인으로
       setOnboardingDone(true);
       router.push("/tourist");
     }

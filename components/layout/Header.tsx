@@ -44,7 +44,7 @@ export function Header({ title = "TourTalk", showBack, backHref = "/", right }: 
           <Hamburger />
         )}
         <h1
-          className="font-bold text-lg truncate cursor-pointer hover:opacity-70 active:opacity-50 transition-opacity focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 rounded"
+          className="font-bold text-lg truncate cursor-pointer "
           onClick={handleLogoClick}
           role="button"
           tabIndex={0}

@@ -26,6 +26,7 @@ export default function ProfilePage() {
   }, [language]);
 
   const tr = t(selectedLang).profile;
+  const trCommon = t(selectedLang).common;
 
   const handleNext = () => {
     const trimmed = name.trim();
@@ -41,9 +42,17 @@ export default function ProfilePage() {
 
     // 온보딩 완료 여부에 따라 분기
     if (onboardingDone) {
-      router.back(); // 설정 수정 모드
+      // 설정 수정 모드: 역할에 따라 메인 페이지로 이동
+      if (role === "guide") {
+        router.push("/guide");
+      } else if (role === "tourist") {
+        router.push("/tourist");
+      } else {
+        router.push("/");
+      }
     } else {
-      router.push("/onboarding/emergency"); // 온보딩 모드
+      // 온보딩 모드
+      router.push("/onboarding/emergency");
     }
   };
 
@@ -106,7 +115,7 @@ export default function ProfilePage() {
           </div>
         </div>
         <Button fullWidth className="mt-8" onClick={handleNext}>
-          {onboardingDone ? "저장" : tr.next}
+          {onboardingDone ? trCommon.save : tr.next}
         </Button>
       </main>
     </>

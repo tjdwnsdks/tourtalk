@@ -2,14 +2,22 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { Menu, User, AlertCircle, UserCog } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { Menu, User, AlertCircle, UserCog, LogOut } from "lucide-react";
 import { useApp } from "@/contexts/AppContext";
 import { t } from "@/lib/i18n";
 
 export function Hamburger() {
   const [open, setOpen] = useState(false);
-  const { language } = useApp();
+  const router = useRouter();
+  const { language, logout } = useApp();
   const tr = t(language);
+
+  const handleLogout = () => {
+    logout();
+    setOpen(false);
+    router.push("/");
+  };
 
   return (
     <div className="relative">
@@ -79,6 +87,18 @@ export function Hamburger() {
             {/* 기타 메뉴 (나중에 구현) */}
             <div className="px-4 py-2 text-sm text-gray-400">{tr.menu.help}</div>
             <div className="px-4 py-2 text-sm text-gray-400">{tr.menu.contact}</div>
+
+            {/* 구분선 */}
+            <div className="border-t border-gray-100 my-2"></div>
+
+            {/* 로그아웃 버튼 */}
+            <button
+              onClick={handleLogout}
+              className="flex items-center gap-3 px-4 py-3 text-sm text-red-600 hover:bg-red-50 transition-colors min-h-[44px] w-full text-left"
+            >
+              <LogOut className="w-5 h-5 shrink-0" />
+              <div className="font-medium">{tr.menu.logout}</div>
+            </button>
           </div>
         </>
       )}

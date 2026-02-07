@@ -69,6 +69,7 @@ type Translations = {
     profileDesc: string;
     emergencyDesc: string;
     roleDesc: string;
+    logout: string;
   };
   emergency: {
     title: string;
@@ -187,6 +188,7 @@ type Translations = {
   common: {
     back: string;
     confirm: string;
+    save: string;
     loading: string;
     sending: string;
     scanComplete: string;
@@ -245,6 +247,7 @@ export const translations: Record<LanguageCode, Translations> = {
       profileDesc: "이름, 언어 등 개인정보 수정",
       emergencyDesc: "긴급 연락처 관리",
       roleDesc: "가이드/관광객 역할 변경",
+      logout: "로그아웃",
     },
     emergency: {
       title: "긴급 연락망 설정",
@@ -363,6 +366,7 @@ export const translations: Record<LanguageCode, Translations> = {
     common: {
       back: "뒤로",
       confirm: "확인",
+      save: "저장",
       loading: "처리 중...",
       sending: "전송 중...",
       scanComplete: "투어 코드 인식됨!",
@@ -419,6 +423,7 @@ export const translations: Record<LanguageCode, Translations> = {
       profileDesc: "Edit name, language, etc.",
       emergencyDesc: "Manage emergency contacts",
       roleDesc: "Switch between guide/tourist",
+      logout: "Logout",
     },
     emergency: {
       title: "Emergency Contacts",
@@ -537,6 +542,7 @@ export const translations: Record<LanguageCode, Translations> = {
     common: {
       back: "Back",
       confirm: "OK",
+      save: "Save",
       loading: "Loading...",
       sending: "Sending...",
       scanComplete: "Tour code recognized!",
@@ -593,6 +599,7 @@ export const translations: Record<LanguageCode, Translations> = {
       profileDesc: "Sửa tên, ngôn ngữ, v.v.",
       emergencyDesc: "Quản lý liên hệ khẩn cấp",
       roleDesc: "Chuyển giữa hướng dẫn viên/khách",
+      logout: "Đăng xuất",
     },
     emergency: {
       title: "Liên hệ khẩn cấp",
@@ -711,6 +718,7 @@ export const translations: Record<LanguageCode, Translations> = {
     common: {
       back: "Quay lại",
       confirm: "OK",
+      save: "Lưu",
       loading: "Đang xử lý...",
       sending: "Đang gửi...",
       scanComplete: "Đã nhận mã tour!",
@@ -767,6 +775,7 @@ export const translations: Record<LanguageCode, Translations> = {
       profileDesc: "编辑姓名、语言等",
       emergencyDesc: "管理紧急联系人",
       roleDesc: "在导游/游客之间切换",
+      logout: "登出",
     },
     emergency: {
       title: "紧急联系人",
@@ -885,6 +894,7 @@ export const translations: Record<LanguageCode, Translations> = {
     common: {
       back: "返回",
       confirm: "确定",
+      save: "保存",
       loading: "处理中...",
       sending: "发送中...",
       scanComplete: "已识别行程码！",
@@ -941,6 +951,7 @@ export const translations: Record<LanguageCode, Translations> = {
       profileDesc: "編輯姓名、語言等",
       emergencyDesc: "管理緊急聯絡人",
       roleDesc: "在導遊/遊客之間切換",
+      logout: "登出",
     },
     emergency: {
       title: "緊急聯絡人",
@@ -1059,6 +1070,7 @@ export const translations: Record<LanguageCode, Translations> = {
     common: {
       back: "返回",
       confirm: "確定",
+      save: "儲存",
       loading: "處理中...",
       sending: "傳送中...",
       scanComplete: "已辨識行程碼！",
@@ -1115,6 +1127,7 @@ export const translations: Record<LanguageCode, Translations> = {
       profileDesc: "名前、言語などを編集",
       emergencyDesc: "緊急連絡先を管理",
       roleDesc: "ガイド/観光客の切り替え",
+      logout: "ログアウト",
     },
     emergency: {
       title: "緊急連絡先",
@@ -1233,6 +1246,7 @@ export const translations: Record<LanguageCode, Translations> = {
     common: {
       back: "戻る",
       confirm: "OK",
+      save: "保存",
       loading: "処理中...",
       sending: "送信中...",
       scanComplete: "ツアーコードを認識しました！",
@@ -1289,6 +1303,7 @@ export const translations: Record<LanguageCode, Translations> = {
       profileDesc: "แก้ไขชื่อ ภาษา ฯลฯ",
       emergencyDesc: "จัดการผู้ติดต่อฉุกเฉิน",
       roleDesc: "สลับระหว่างไกด์/นักท่องเที่ยว",
+      logout: "ออกจากระบบ",
     },
     emergency: {
       title: "ผู้ติดต่อฉุกเฉิน",
@@ -1407,6 +1422,7 @@ export const translations: Record<LanguageCode, Translations> = {
     common: {
       back: "กลับ",
       confirm: "ตกลง",
+      save: "บันทึก",
       loading: "กำลังดำเนินการ...",
       sending: "กำลังส่ง...",
       scanComplete: "รู้จักรหัสทัวร์แล้ว!",
@@ -1463,6 +1479,7 @@ export const translations: Record<LanguageCode, Translations> = {
       profileDesc: "Edit nama, bahasa, dll.",
       emergencyDesc: "Kelola kontak darurat",
       roleDesc: "Beralih antara pemandu/wisatawan",
+      logout: "Keluar",
     },
     emergency: {
       title: "Kontak darurat",
@@ -1581,6 +1598,7 @@ export const translations: Record<LanguageCode, Translations> = {
     common: {
       back: "Kembali",
       confirm: "OK",
+      save: "Simpan",
       loading: "Memproses...",
       sending: "Mengirim...",
       scanComplete: "Kode tur dikenali!",
