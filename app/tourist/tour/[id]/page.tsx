@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useState, useEffect } from "react";
 import toast from "react-hot-toast";
 import { useApp } from "@/contexts/AppContext";
-import { fakeTours, getTourName, fakeTranslate } from "@/lib/mockData";
+import { fakeTours, getTourName, fakeTranslate, quickRequestPresets } from "@/lib/mockData";
 import { getRelativeTime } from "@/lib/utils";
 import type { Tour, Message, LanguageCode } from "@/types";
 import { t } from "@/lib/i18n";
@@ -114,11 +114,41 @@ export default function TouristMainPage() {
           <span className="text-sm text-gray-600">👥 {tour.participants} {tr.participantsCount}</span>
         </div>
 
-        <div className="space-y-4 mb-6">
+        <div className="flex gap-2 justify-center mb-4">
+          <Link href={`/tourist/request?tourId=${id}`}>
+            <Button variant="outline" disabled={sending}>🎤 {tr.question}</Button>
+          </Link>
+          <Button
+            variant="outline"
+            onClick={() => handleSendMessage(quickRequestPresets[1].ko)}
+            disabled={sending}
+          >
+            📷 {tr.photo}
+          </Button>
+          <Button
+            variant="outline"
+            onClick={() => handleSendMessage(quickRequestPresets[3].ko)}
+            disabled={sending}
+          >
+            💬 {tr.more}
+          </Button>
+        </div>
+        <div className="flex justify-center mb-6">
+          <Button
+            variant="danger"
+            size="lg"
+            onClick={() => handleSendMessage(quickRequestPresets[5].ko)}
+            disabled={sending}
+          >
+            🆘 {tr.emergency}
+          </Button>
+        </div>
+
+        <div className="space-y-4">
           {translatedForMe.length === 0 ? (
             <p className="text-gray-500 text-sm">{tr.noMessages}</p>
           ) : (
-            translatedForMe.map((m) => (
+            [...translatedForMe].reverse().map((m) => (
               <Card key={m.id} className="space-y-2">
                 <p className="text-base font-medium">🔊 {m.text}</p>
                 <p className="text-xs text-gray-500">({m.originalText})</p>
@@ -134,36 +164,6 @@ export default function TouristMainPage() {
               </Card>
             ))
           )}
-        </div>
-
-        <div className="flex gap-2 justify-center mb-4">
-          <Link href={`/tourist/request?tourId=${id}`}>
-            <Button variant="outline" disabled={sending}>🎤 {tr.question}</Button>
-          </Link>
-          <Button
-            variant="outline"
-            onClick={() => handleSendMessage("📷 사진 찍어주세요")}
-            disabled={sending}
-          >
-            📷 {tr.photo}
-          </Button>
-          <Button
-            variant="outline"
-            onClick={() => handleSendMessage("💬 추가 요청이 있습니다")}
-            disabled={sending}
-          >
-            💬 {tr.more}
-          </Button>
-        </div>
-        <div className="flex justify-center">
-          <Button
-            variant="danger"
-            size="lg"
-            onClick={() => handleSendMessage("🆘 긴급 상황입니다")}
-            disabled={sending}
-          >
-            🆘 {tr.emergency}
-          </Button>
         </div>
       </main>
     </>
