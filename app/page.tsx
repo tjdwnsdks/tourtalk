@@ -26,17 +26,17 @@ export default function LoginPage() {
 
   return (
     <main className="min-h-screen flex flex-col items-center justify-center px-6 pb-12">
-      <div className="text-center mb-[50px]" id="title-box">
+      <div className="text-center mb-[30px]" id="title-box">
         {/* <h1 className="text-4xl font-bold text-gray-900 mb-[50px]">{tr.title}</h1> */}
         <Image
           src={logoImg}
           alt={tr.title}
-          className="aspect-[5/4] max-h-[280px] w-auto object-contain mb-[50px] mx-auto"
+          className="aspect-[5/4] max-h-[320px] w-auto object-contain mb-[50px] mx-auto"
           priority
         />
         {/* <p className="text-lg text-gray-600">🌏 🗣️ 💬</p> */}
-        <p className="text-base text-gray-600 mt-2">{tr.subtitle}</p>
-        <p className="text-base text-gray-600">{tr.tagline}</p>
+        {/* <p className="text-base text-gray-600 mt-2">{tr.subtitle}</p>
+        <p className="text-base text-gray-600">{tr.tagline}</p> */}
       </div>
       <div className="w-full max-w-sm space-y-3">
         <button
