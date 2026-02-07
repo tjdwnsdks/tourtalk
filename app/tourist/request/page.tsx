@@ -5,12 +5,15 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 import toast from "react-hot-toast";
 import { useApp } from "@/contexts/AppContext";
-import { quickRequestPresets } from "@/lib/mockData";
+import { quickRequestPresets, fakeTranslate } from "@/lib/mockData";
 import { t } from "@/lib/i18n";
+import type { Message, LanguageCode } from "@/types";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { Header } from "@/components/layout/Header";
 import { Card } from "@/components/ui/Card";
+
+const LANG_CODES: LanguageCode[] = ["ko", "en", "vi", "zh-CN", "zh-TW", "ja", "th", "id"];
 
 type LangKey = keyof typeof quickRequestPresets[0];
 
@@ -27,7 +30,7 @@ function QuickRequestContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const tourId = searchParams.get("tourId") || "";
-  const { language, emergencyContacts } = useApp();
+  const { language, emergencyContacts, addTourMessage, userName } = useApp();
   const tr = t(language).tourist;
   const common = t(language).common;
   const [customText, setCustomText] = useState("");
@@ -40,24 +43,68 @@ function QuickRequestContent() {
   };
 
   const handlePreset = async (preset: (typeof quickRequestPresets)[0]) => {
-    const text = presetLabel(preset);
+    if (!tourId) return;
+    const koreanText = preset.ko;
     setSending(true);
     toast.loading(common.sending, { id: "req" });
-    await new Promise((r) => setTimeout(r, 500));
+    await new Promise((r) => setTimeout(r, 2000));
+
+    // 메시지 번역
+    const translatedTexts: Record<string, string> = {};
+    for (const lang of LANG_CODES) {
+      translatedTexts[lang] = fakeTranslate(koreanText, lang);
+    }
+
+    // 메시지 객체 생성
+    const msg: Message = {
+      id: `msg-tourist-${Date.now()}`,
+      tourId: tourId,
+      senderId: "tourist1",
+      senderName: userName || "Tourist",
+      senderRole: "tourist",
+      originalText: koreanText,
+      translatedTexts,
+      timestamp: new Date().toISOString(),
+      isEmergency: false,
+    };
+
+    addTourMessage(tourId, msg);
     toast.success(common.messageSent, { id: "req" });
     setSending(false);
-    if (tourId) router.push(`/tourist/tour/${tourId}`);
+    router.push(`/tourist/tour/${tourId}`);
   };
 
   const handleCustomSend = async () => {
-    if (!customText.trim()) return;
+    if (!customText.trim() || !tourId) return;
+    const text = customText.trim();
     setSending(true);
     toast.loading(common.sending, { id: "req" });
-    await new Promise((r) => setTimeout(r, 500));
+    await new Promise((r) => setTimeout(r, 2000));
+
+    // 메시지 번역
+    const translatedTexts: Record<string, string> = {};
+    for (const lang of LANG_CODES) {
+      translatedTexts[lang] = fakeTranslate(text, lang);
+    }
+
+    // 메시지 객체 생성
+    const msg: Message = {
+      id: `msg-tourist-${Date.now()}`,
+      tourId: tourId,
+      senderId: "tourist1",
+      senderName: userName || "Tourist",
+      senderRole: "tourist",
+      originalText: text,
+      translatedTexts,
+      timestamp: new Date().toISOString(),
+      isEmergency: false,
+    };
+
+    addTourMessage(tourId, msg);
     toast.success(common.messageSent, { id: "req" });
     setSending(false);
     setCustomText("");
-    if (tourId) router.push(`/tourist/tour/${tourId}`);
+    router.push(`/tourist/tour/${tourId}`);
   };
 
   const handleEmergencySend = async () => {
