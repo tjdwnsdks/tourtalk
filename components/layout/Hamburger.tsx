@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { Menu } from "lucide-react";
+import { Menu, User, AlertCircle, UserCog } from "lucide-react";
 import { useApp } from "@/contexts/AppContext";
 import { t } from "@/lib/i18n";
 
@@ -28,19 +28,57 @@ export function Hamburger() {
             aria-hidden
             onClick={() => setOpen(false)}
           />
-          <div className="absolute left-0 top-full mt-1 z-20 w-56 rounded-xl border border-gray-200 bg-white shadow-lg py-2">
+          <div className="absolute left-0 top-full mt-1 z-20 w-64 rounded-xl border border-gray-200 bg-white shadow-lg py-2">
+            {/* 설정 섹션 헤더 */}
+            <div className="px-3 py-2 text-xs font-semibold text-gray-400 uppercase tracking-wider">
+              {tr.menu.settings}
+            </div>
+
+            {/* Profile 설정 */}
+            <Link
+              href="/onboarding/profile"
+              onClick={() => setOpen(false)}
+              className="flex items-center gap-3 px-4 py-3 text-sm text-gray-800 hover:bg-gray-50 transition-colors min-h-[44px]"
+            >
+              <User className="w-5 h-5 text-gray-600 shrink-0" />
+              <div className="flex-1 min-w-0">
+                <div className="font-medium">{tr.menu.profile}</div>
+                <div className="text-xs text-gray-500 truncate">{tr.menu.profileDesc}</div>
+              </div>
+            </Link>
+
+            {/* Emergency 설정 */}
             <Link
               href="/onboarding/emergency"
               onClick={() => setOpen(false)}
-              className="block w-full px-4 py-2 text-left text-sm text-gray-800 hover:bg-gray-50"
+              className="flex items-center gap-3 px-4 py-3 text-sm text-gray-800 hover:bg-gray-50 transition-colors min-h-[44px]"
             >
-              긴급 연락망 설정
+              <AlertCircle className="w-5 h-5 text-gray-600 shrink-0" />
+              <div className="flex-1 min-w-0">
+                <div className="font-medium">{tr.menu.emergency}</div>
+                <div className="text-xs text-gray-500 truncate">{tr.menu.emergencyDesc}</div>
+              </div>
             </Link>
-            <div className="border-t border-gray-100 mt-2 pt-2 px-4 text-sm text-gray-500">
-              {tr.menu.settings}
-            </div>
-            <div className="px-4 py-1 text-sm text-gray-500">{tr.menu.help}</div>
-            <div className="px-4 py-1 text-sm text-gray-500">{tr.menu.contact}</div>
+
+            {/* Role 설정 */}
+            <Link
+              href="/onboarding/role"
+              onClick={() => setOpen(false)}
+              className="flex items-center gap-3 px-4 py-3 text-sm text-gray-800 hover:bg-gray-50 transition-colors min-h-[44px]"
+            >
+              <UserCog className="w-5 h-5 text-gray-600 shrink-0" />
+              <div className="flex-1 min-w-0">
+                <div className="font-medium">{tr.menu.role}</div>
+                <div className="text-xs text-gray-500 truncate">{tr.menu.roleDesc}</div>
+              </div>
+            </Link>
+
+            {/* 구분선 */}
+            <div className="border-t border-gray-100 my-2"></div>
+
+            {/* 기타 메뉴 (나중에 구현) */}
+            <div className="px-4 py-2 text-sm text-gray-400">{tr.menu.help}</div>
+            <div className="px-4 py-2 text-sm text-gray-400">{tr.menu.contact}</div>
           </div>
         </>
       )}

@@ -9,24 +9,40 @@ import { Header } from "@/components/layout/Header";
 
 export default function RolePage() {
   const router = useRouter();
-  const { language, setRole, setOnboardingDone } = useApp();
+  const { language, setRole, setOnboardingDone, onboardingDone, role } = useApp();
   const tr = t(language).role;
 
   const handleGuide = () => {
     setRole("guide");
-    setOnboardingDone(false);
-    router.push("/onboarding/emergency");
+
+    if (onboardingDone) {
+      // 설정 변경 모드: 역할만 변경하고 돌아가기
+      router.back();
+    } else {
+      // 온보딩 모드: 완료 처리하고 Guide 메인으로
+      setOnboardingDone(true);
+      router.push("/guide");
+    }
   };
 
   const handleTourist = () => {
     setRole("tourist");
-    setOnboardingDone(false);
-    router.push("/onboarding/emergency");
+
+    if (onboardingDone) {
+      router.back();
+    } else {
+      setOnboardingDone(true);
+      router.push("/tourist");
+    }
   };
 
   return (
     <>
-      <Header title="TourTalk" />
+      <Header
+        title="TourTalk"
+        showBack
+        backHref={onboardingDone ? (role === "guide" ? "/guide" : "/tourist") : "/onboarding/emergency"}
+      />
       <main className="p-4 max-w-lg mx-auto">
         <h2 className="text-xl font-bold text-center mb-6">{tr.howToUse}</h2>
         <div className="space-y-4">

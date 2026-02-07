@@ -13,7 +13,7 @@ const LANGUAGES: LanguageCode[] = ["ko", "en", "vi", "zh-CN", "zh-TW", "ja", "th
 
 export default function ProfilePage() {
   const router = useRouter();
-  const { language, setLanguage, setUserName, userName } = useApp();
+  const { language, setLanguage, setUserName, userName, onboardingDone, role } = useApp();
   // "User"는 로그인 시 기본값이므로 이름 칸에 채우지 않음
   const [name, setName] = useState(() => (userName && userName !== "User" ? userName : ""));
   const [phone, setPhone] = useState("");
@@ -38,12 +38,22 @@ export default function ProfilePage() {
     setNameError(false);
     setUserName(trimmed);
     setLanguage(selectedLang);
-    router.push("/onboarding/role");
+
+    // 온보딩 완료 여부에 따라 분기
+    if (onboardingDone) {
+      router.back(); // 설정 수정 모드
+    } else {
+      router.push("/onboarding/emergency"); // 온보딩 모드
+    }
   };
 
   return (
     <>
-      <Header title={tr.welcome} showBack backHref="/" />
+      <Header
+        title={tr.welcome}
+        showBack
+        backHref={onboardingDone ? (role === "guide" ? "/guide" : "/tourist") : "/"}
+      />
       <main className="p-4 max-w-lg mx-auto">
         <p className="text-gray-600 mb-6">{tr.firstTime}</p>
         <div className="space-y-10">
@@ -96,7 +106,7 @@ export default function ProfilePage() {
           </div>
         </div>
         <Button fullWidth className="mt-8" onClick={handleNext}>
-          {tr.next}
+          {onboardingDone ? "저장" : tr.next}
         </Button>
       </main>
     </>

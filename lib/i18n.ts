@@ -63,6 +63,12 @@ type Translations = {
     settings: string;
     help: string;
     contact: string;
+    profile: string;
+    emergency: string;
+    role: string;
+    profileDesc: string;
+    emergencyDesc: string;
+    roleDesc: string;
   };
   emergency: {
     title: string;
@@ -228,7 +234,18 @@ export const translations: Record<LanguageCode, Translations> = {
       touristDesc: "투어에 참여하고 정보를 받습니다",
       changeLater: "나중에 변경 가능",
     },
-    menu: { language: "Language", settings: "Settings", help: "Help", contact: "Contact" },
+    menu: {
+      language: "Language",
+      settings: "설정",
+      help: "도움말",
+      contact: "문의하기",
+      profile: "프로필 설정",
+      emergency: "긴급 연락망",
+      role: "역할 변경",
+      profileDesc: "이름, 언어 등 개인정보 수정",
+      emergencyDesc: "긴급 연락처 관리",
+      roleDesc: "가이드/관광객 역할 변경",
+    },
     emergency: {
       title: "긴급 연락망 설정",
       subtitle: "긴급 상황 시 연락받을 사람을 등록해주세요",
@@ -391,7 +408,18 @@ export const translations: Record<LanguageCode, Translations> = {
       touristDesc: "Join tours and receive information",
       changeLater: "You can change this later",
     },
-    menu: { language: "Language", settings: "Settings", help: "Help", contact: "Contact" },
+    menu: {
+      language: "Language",
+      settings: "Settings",
+      help: "Help",
+      contact: "Contact",
+      profile: "Profile Settings",
+      emergency: "Emergency Contacts",
+      role: "Change Role",
+      profileDesc: "Edit name, language, etc.",
+      emergencyDesc: "Manage emergency contacts",
+      roleDesc: "Switch between guide/tourist",
+    },
     emergency: {
       title: "Emergency Contacts",
       subtitle: "Register who to contact in an emergency",
@@ -554,7 +582,18 @@ export const translations: Record<LanguageCode, Translations> = {
       touristDesc: "Tham gia tour và nhận thông tin",
       changeLater: "Có thể đổi sau",
     },
-    menu: { language: "Language", settings: "Settings", help: "Help", contact: "Contact" },
+    menu: {
+      language: "Language",
+      settings: "Settings",
+      help: "Help",
+      contact: "Contact",
+      profile: "Cài đặt hồ sơ",
+      emergency: "Liên hệ khẩn cấp",
+      role: "Đổi vai trò",
+      profileDesc: "Sửa tên, ngôn ngữ, v.v.",
+      emergencyDesc: "Quản lý liên hệ khẩn cấp",
+      roleDesc: "Chuyển giữa hướng dẫn viên/khách",
+    },
     emergency: {
       title: "Liên hệ khẩn cấp",
       subtitle: "Đăng ký người liên hệ khi khẩn cấp",
@@ -717,7 +756,18 @@ export const translations: Record<LanguageCode, Translations> = {
       touristDesc: "参加行程并接收信息",
       changeLater: "可稍后更改",
     },
-    menu: { language: "Language", settings: "Settings", help: "Help", contact: "Contact" },
+    menu: {
+      language: "Language",
+      settings: "Settings",
+      help: "Help",
+      contact: "Contact",
+      profile: "个人资料设置",
+      emergency: "紧急联系人",
+      role: "更改角色",
+      profileDesc: "编辑姓名、语言等",
+      emergencyDesc: "管理紧急联系人",
+      roleDesc: "在导游/游客之间切换",
+    },
     emergency: {
       title: "紧急联系人",
       subtitle: "登记紧急情况下的联系人",
@@ -880,7 +930,18 @@ export const translations: Record<LanguageCode, Translations> = {
       touristDesc: "參加行程並接收資訊",
       changeLater: "可稍後變更",
     },
-    menu: { language: "Language", settings: "Settings", help: "Help", contact: "Contact" },
+    menu: {
+      language: "Language",
+      settings: "Settings",
+      help: "Help",
+      contact: "Contact",
+      profile: "個人資料設定",
+      emergency: "緊急聯絡人",
+      role: "更改角色",
+      profileDesc: "編輯姓名、語言等",
+      emergencyDesc: "管理緊急聯絡人",
+      roleDesc: "在導遊/遊客之間切換",
+    },
     emergency: {
       title: "緊急聯絡人",
       subtitle: "登記緊急情況下的聯絡人",
@@ -1043,7 +1104,18 @@ export const translations: Record<LanguageCode, Translations> = {
       touristDesc: "ツアーに参加し、情報を受け取ります",
       changeLater: "後で変更できます",
     },
-    menu: { language: "Language", settings: "Settings", help: "Help", contact: "Contact" },
+    menu: {
+      language: "Language",
+      settings: "Settings",
+      help: "Help",
+      contact: "Contact",
+      profile: "プロフィール設定",
+      emergency: "緊急連絡先",
+      role: "役割変更",
+      profileDesc: "名前、言語などを編集",
+      emergencyDesc: "緊急連絡先を管理",
+      roleDesc: "ガイド/観光客の切り替え",
+    },
     emergency: {
       title: "緊急連絡先",
       subtitle: "緊急時に連絡する相手を登録してください",
@@ -1206,7 +1278,18 @@ export const translations: Record<LanguageCode, Translations> = {
       touristDesc: "เข้าร่วมทัวร์และรับข้อมูล",
       changeLater: "เปลี่ยนได้ภายหลัง",
     },
-    menu: { language: "Language", settings: "Settings", help: "Help", contact: "Contact" },
+    menu: {
+      language: "Language",
+      settings: "Settings",
+      help: "Help",
+      contact: "Contact",
+      profile: "ตั้งค่าโปรไฟล์",
+      emergency: "ผู้ติดต่อฉุกเฉิน",
+      role: "เปลี่ยนบทบาท",
+      profileDesc: "แก้ไขชื่อ ภาษา ฯลฯ",
+      emergencyDesc: "จัดการผู้ติดต่อฉุกเฉิน",
+      roleDesc: "สลับระหว่างไกด์/นักท่องเที่ยว",
+    },
     emergency: {
       title: "ผู้ติดต่อฉุกเฉิน",
       subtitle: "ลงทะเบียนผู้ที่จะติดต่อในเหตุฉุกเฉิน",
@@ -1369,7 +1452,18 @@ export const translations: Record<LanguageCode, Translations> = {
       touristDesc: "Ikut tur dan terima informasi",
       changeLater: "Dapat diubah nanti",
     },
-    menu: { language: "Language", settings: "Settings", help: "Help", contact: "Contact" },
+    menu: {
+      language: "Language",
+      settings: "Settings",
+      help: "Help",
+      contact: "Contact",
+      profile: "Pengaturan Profil",
+      emergency: "Kontak Darurat",
+      role: "Ubah Peran",
+      profileDesc: "Edit nama, bahasa, dll.",
+      emergencyDesc: "Kelola kontak darurat",
+      roleDesc: "Beralih antara pemandu/wisatawan",
+    },
     emergency: {
       title: "Kontak darurat",
       subtitle: "Daftarkan siapa yang akan dihubungi saat darurat",

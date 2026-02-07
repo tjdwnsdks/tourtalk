@@ -21,7 +21,7 @@ function isValidEmail(value: string): boolean {
 
 export default function EmergencyPage() {
   const router = useRouter();
-  const { language, role, emergencyContacts, setEmergencyContacts, setOnboardingDone } = useApp();
+  const { language, role, emergencyContacts, setEmergencyContacts, setOnboardingDone, onboardingDone } = useApp();
   const tr = t(language).emergency;
   const [searchEmail, setSearchEmail] = useState("");
   const [searchEmailError, setSearchEmailError] = useState("");
@@ -107,14 +107,22 @@ export default function EmergencyPage() {
       setShowEmptyWarning(true);
       return;
     }
-    setOnboardingDone(true);
-    if (role === "guide") router.push("/guide");
-    else router.push("/tourist");
+
+    // 온보딩 완료 여부에 따라 분기
+    if (onboardingDone) {
+      router.back(); // 설정 수정 모드
+    } else {
+      router.push("/onboarding/role"); // 온보딩 모드 (Role 선택으로)
+    }
   };
 
   return (
     <>
-      <Header title={tr.title} showBack backHref="/onboarding/role" />
+      <Header
+        title={tr.title}
+        showBack
+        backHref={onboardingDone ? (role === "guide" ? "/guide" : "/tourist") : "/onboarding/profile"}
+      />
       <main className="p-4 max-w-lg mx-auto">
         <p className="text-gray-600 mb-6">🆘 {tr.subtitle}</p>
 
@@ -198,7 +206,17 @@ export default function EmergencyPage() {
         </div>
 
         <div className="flex gap-2">
-          <Button variant="ghost" className="flex-1 min-w-0 !bg-[#ebebeb] hover:!bg-[#e0e0e0]" onClick={() => { setOnboardingDone(true); if (role === "guide") router.push("/guide"); else router.push("/tourist"); }}>
+          <Button
+            variant="ghost"
+            className="flex-1 min-w-0 !bg-[#ebebeb] hover:!bg-[#e0e0e0]"
+            onClick={() => {
+              if (onboardingDone) {
+                router.back();
+              } else {
+                router.push("/onboarding/role");
+              }
+            }}
+          >
             {tr.later}
           </Button>
           <Button variant="primary" className="flex-1 min-w-0" onClick={handleDone}>
