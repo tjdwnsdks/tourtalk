@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { Settings, AlertCircle, Circle, Pause, Users, Plus } from "lucide-react";
+import { Circle, Pause, Users, Plus } from "lucide-react";
 import { useApp } from "@/contexts/AppContext";
 import { t, replaceName } from "@/lib/i18n";
 import { fakeTours, getParticipantsForTour, getTourName } from "@/lib/mockData";
@@ -24,15 +24,7 @@ export default function GuideHomePage() {
 
   return (
     <>
-      <Header
-        title={tr.home}
-        right={
-          <>
-            <Settings className="w-5 h-5 text-gray-600" />
-            <AlertCircle className="w-5 h-5 text-red-500" />
-          </>
-        }
-      />
+      <Header title={tr.home} />
       <main className="p-4 max-w-lg mx-auto">
         <h2 className="text-xl font-bold mb-6">
           {replaceName(tr.hello, userName || "Guide")}

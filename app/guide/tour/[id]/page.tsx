@@ -4,7 +4,7 @@ import { useParams, useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import toast from "react-hot-toast";
-import { Settings, AlertCircle, Mic, Users, MessageSquare, BarChart3, Circle } from "lucide-react";
+import { Mic, Users, MessageSquare, BarChart3, Circle } from "lucide-react";
 import { useApp } from "@/contexts/AppContext";
 import { fakeTours, getParticipantsForTour, guideQuickMessages, fakeTranslate, getTourName } from "@/lib/mockData";
 import { getRelativeTime } from "@/lib/utils";
@@ -226,13 +226,6 @@ export default function GuideTourManagePage() {
         title={`${getTourName(tour, language)} (#${tour.id})`}
         showBack
         backHref="/guide"
-        right={
-          <>
-            <span className="text-red-500 text-sm font-medium">🔴 LIVE</span>
-            <Settings className="w-5 h-5 text-gray-600" />
-            <AlertCircle className="w-5 h-5 text-red-500" />
-          </>
-        }
       />
       <main className="p-4 max-w-lg mx-auto">
         <div className="flex gap-1 border-b border-gray-200 mb-4">

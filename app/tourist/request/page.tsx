@@ -72,7 +72,7 @@ function QuickRequestContent() {
 
   return (
     <>
-      <Header title={tr.quickRequest} right={<span>🆘</span>} showBack backHref={tourId ? `/tourist/tour/${tourId}` : "/tourist"} />
+      <Header title={tr.quickRequest} showBack backHref={tourId ? `/tourist/tour/${tourId}` : "/tourist"} />
       <main className="p-4 max-w-lg mx-auto">
         <p className="text-sm font-medium text-gray-700 mb-4">{tr.frequentRequests}</p>
         <div className="space-y-2 mb-6">
