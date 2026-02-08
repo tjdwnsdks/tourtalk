@@ -311,9 +311,12 @@ export default function GuideTourManagePage() {
                 <Card key={m.id}>
                   <p className="text-sm text-gray-600">{m.originalText}</p>
                   <p className="text-xs text-gray-400">{getRelativeTime(m.timestamp)}</p>
-                  <Button variant="ghost" size="sm" onClick={() => handleListen(m.originalText)}>
-                    🔊 {touristTr.listen}
-                  </Button>
+                  <div className="flex gap-1 mt-1">
+                    <Button variant="ghost" size="sm" onClick={() => handleListen(m.originalText)}>
+                      🔊 {touristTr.listen}
+                    </Button>
+                    <Button variant="ghost" size="sm" onClick={handleVoiceGuide}>{tr.reply}</Button>
+                  </div>
                 </Card>
               ))}
               <Card className="bg-yellow-50 border-yellow-200">

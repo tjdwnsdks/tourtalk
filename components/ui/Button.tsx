@@ -10,10 +10,10 @@ type ButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
 
 const variantClasses = {
   primary: "bg-blue-600 text-white hover:bg-blue-700 active:bg-blue-800",
-  secondary: "bg-gray-200 text-gray-900 hover:bg-gray-300",
-  outline: "border-2 border-gray-300 bg-transparent hover:bg-gray-50",
-  danger: "bg-red-600 text-white hover:bg-red-700",
-  ghost: "bg-transparent hover:bg-gray-100",
+  secondary: "bg-gray-200 text-gray-900 hover:bg-gray-300 active:bg-gray-400",
+  outline: "border-2 border-gray-300 bg-transparent hover:bg-gray-50 active:bg-gray-100",
+  danger: "bg-red-600 text-white hover:bg-red-700 active:bg-red-800",
+  ghost: "bg-transparent hover:bg-gray-100 active:bg-gray-200",
 };
 
 const sizeClasses = {
@@ -38,7 +38,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       <button
         ref={ref}
         className={[
-          "rounded-xl font-medium transition-colors disabled:opacity-50 disabled:pointer-events-none min-h-[44px] min-w-[44px] inline-flex items-center justify-center",
+          "rounded-xl font-medium transition-all duration-150 active:scale-95 disabled:opacity-50 disabled:pointer-events-none min-h-[44px] min-w-[44px] inline-flex items-center justify-center",
           variantClasses[variant],
           sizeClasses[size],
           fullWidth ? "w-full" : "",
