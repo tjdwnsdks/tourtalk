@@ -31,7 +31,7 @@ export default function LoginPage() {
         <Image
           src={logoImg}
           alt={tr.title}
-          className="aspect-[5/4] max-h-[320px] w-auto object-contain mb-[50px] mx-auto"
+          className="aspect-[5/4] max-h-[280px] w-auto object-contain mb-[50px] mx-auto"
           priority
           placeholder="blur"
         />

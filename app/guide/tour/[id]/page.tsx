@@ -130,8 +130,33 @@ export default function GuideTourManagePage() {
     toast.success(common.messageSent, { id: "send-msg" });
   };
 
-  const handleQuickMessage = (msg: string) => {
-    handleSendMessage(msg);
+  /** 빠른 메시지 전송 - 이미 번역된 다국어 텍스트 사용 */
+  const handleQuickMessage = async (msgIndex: number) => {
+    if (sending) return;
+    setSending(true);
+    toast.loading(common.sending, { id: "send-msg" });
+    await new Promise((r) => setTimeout(r, 500));
+
+    const quickMsg = guideQuickMessages[msgIndex];
+    const translatedTexts: Record<string, string> = {};
+    for (const lang of LANG_CODES) {
+      translatedTexts[lang] = (quickMsg[lang as keyof typeof quickMsg] as string) || quickMsg.en || quickMsg.ko;
+    }
+
+    const msg: Message = {
+      id: `msg-${Date.now()}`,
+      tourId: id,
+      senderId: "guide1",
+      senderName: "Guide",
+      senderRole: "guide",
+      originalText: quickMsg.ko,
+      translatedTexts,
+      timestamp: new Date().toISOString(),
+      isEmergency: false,
+    };
+    addTourMessage(id, msg);
+    setSending(false);
+    toast.success(common.messageSent, { id: "send-msg" });
   };
 
   /** 받은 메시지 TTS 재생 (듣기) - 화면 중앙 정사각형 팝업 표시 (나가기 버튼으로만 닫기) */
@@ -298,7 +323,7 @@ export default function GuideTourManagePage() {
                   key={idx}
                   variant="ghost"
                   size="sm"
-                  onClick={() => handleQuickMessage(msg[language] || msg.ko)}
+                  onClick={() => handleQuickMessage(idx)}
                   disabled={sending}
                 >
                   {msg[language] || msg.ko}
