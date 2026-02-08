@@ -84,13 +84,6 @@ export function Hamburger() {
             {/* 구분선 */}
             <div className="border-t border-gray-100 my-2"></div>
 
-            {/* 기타 메뉴 (나중에 구현) */}
-            <div className="px-4 py-2 text-sm text-gray-400">{tr.menu.help}</div>
-            <div className="px-4 py-2 text-sm text-gray-400">{tr.menu.contact}</div>
-
-            {/* 구분선 */}
-            <div className="border-t border-gray-100 my-2"></div>
-
             {/* 로그아웃 버튼 */}
             <button
               onClick={handleLogout}
