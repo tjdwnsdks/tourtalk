@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useApp } from "@/contexts/AppContext";
 import { t } from "@/lib/i18n";
@@ -14,8 +15,19 @@ import logoImg from "../logo.png";
 
 export default function LoginPage() {
   const router = useRouter();
-  const { language, setUserName } = useApp();
+  const { language, setUserName, role, onboardingDone } = useApp();
   const tr = t(language).login;
+
+  // 이미 로그인되어 있고 역할이 선택된 경우 해당 역할의 메인 페이지로 리다이렉트
+  useEffect(() => {
+    if (role && onboardingDone) {
+      if (role === "guide") {
+        router.replace("/guide");
+      } else if (role === "tourist") {
+        router.replace("/tourist");
+      }
+    }
+  }, [role, onboardingDone, router]);
 
   const handleSocialLogin = (provider: "google" | "kakao") => {
     // MVP 0: 실제 로그인 없이 시뮬레이션. 첫 방문으로 간주하고 프로필로 이동
