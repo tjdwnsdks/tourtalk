@@ -94,6 +94,8 @@ export default function GuideTourManagePage() {
   const [searchEmail, setSearchEmail] = useState("");
   const [searchEmailError, setSearchEmailError] = useState("");
   const [searchResult, setSearchResult] = useState<{ id: string; name: string; email: string; isMember: boolean } | null>(null);
+  // 투어 종료 확인 팝업 상태
+  const [showEndTourConfirm, setShowEndTourConfirm] = useState(false);
 
   const allTours = [...guideTours, ...fakeTours];
   const tour = allTours.find((t) => t.id === id);
@@ -245,6 +247,18 @@ export default function GuideTourManagePage() {
     // TODO: 실제 녹음 API 연동
   };
 
+  /** 투어 종료 핸들러 */
+  const handleEndTour = () => {
+    setShowEndTourConfirm(true);
+  };
+
+  /** 투어 종료 확인 */
+  const handleConfirmEndTour = () => {
+    // TODO: 실제로는 서버에 투어 종료 요청을 보내야 함
+    toast.success("투어가 종료되었습니다.");
+    router.push("/guide");
+  };
+
   /** 재생 중 팝업 표시 중일 때 마침표 1 → 2 → 3 → 1 반복 애니메이션 */
   useEffect(() => {
     if (!showPlayingPopup) return;
@@ -277,6 +291,32 @@ export default function GuideTourManagePage() {
 
   return (
     <>
+      {/* 투어 종료 확인 팝업 */}
+      {showEndTourConfirm && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30">
+          <div className="w-[85%] max-w-[350px] rounded-2xl bg-white shadow-xl p-6">
+            <p className="text-lg font-medium text-gray-800 mb-6 text-center">
+              정말 투어를 종료하시겠습니까?
+            </p>
+            <div className="flex gap-3">
+              <Button
+                variant="outline"
+                className="flex-1"
+                onClick={() => setShowEndTourConfirm(false)}
+              >
+                {emergencyTr.cancel}
+              </Button>
+              <Button
+                variant="danger"
+                className="flex-1"
+                onClick={handleConfirmEndTour}
+              >
+                확인
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
       {/* 재생 중 팝업: 나가기 버튼 클릭 시에만 닫힘 */}
       {showPlayingPopup && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30">
@@ -535,7 +575,7 @@ export default function GuideTourManagePage() {
             </div>
             <div className="mt-6 flex gap-2">
               <Button variant="outline" fullWidth>{tr.pauseTour}</Button>
-              <Button variant="danger" fullWidth>{tr.endTour}</Button>
+              <Button variant="danger" fullWidth onClick={handleEndTour}>{tr.endTour}</Button>
             </div>
           </>
         )}

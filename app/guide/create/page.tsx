@@ -19,16 +19,47 @@ export default function TourCreatePage() {
   const tr = t(language).tourCreate;
   const [step, setStep] = useState<"form" | "created">("form");
   const [name, setName] = useState("");
-  const [date, setDate] = useState("2025-02-10");
+  const [date, setDate] = useState("2026-02-10");
   const [time, setTime] = useState("09:00");
   const [maxParticipants, setMaxParticipants] = useState(30);
   const [createdTour, setCreatedTour] = useState<Tour | null>(null);
+  // 유효성 검사 오류 메시지
+  const [nameError, setNameError] = useState("");
+  const [dateError, setDateError] = useState("");
 
   const handleCreate = () => {
+    // 유효성 검사 초기화
+    setNameError("");
+    setDateError("");
+
+    let hasError = false;
+
+    // 투어 이름 검사
+    if (!name.trim()) {
+      setNameError("제목을 입력하시오");
+      hasError = true;
+    }
+
+    // 투어 날짜 검사 (오늘 날짜보다 이전인지 확인)
+    const today = new Date();
+    today.setHours(0, 0, 0, 0); // 시간을 00:00:00으로 설정
+    const selectedDate = new Date(date);
+    selectedDate.setHours(0, 0, 0, 0);
+
+    if (selectedDate < today) {
+      setDateError("날짜가 올바르지 않습니다");
+      hasError = true;
+    }
+
+    // 오류가 있으면 중단
+    if (hasError) {
+      return;
+    }
+
     const code = generateTourCode();
     const tour: Tour = {
       id: code,
-      name: name || "새 투어",
+      name: name.trim(),
       date,
       startTime: time,
       participants: 0,
@@ -94,13 +125,21 @@ export default function TourCreatePage() {
             label={tr.name}
             placeholder={tr.namePlaceholder}
             value={name}
-            onChange={(e) => setName(e.target.value)}
+            onChange={(e) => {
+              setName(e.target.value);
+              if (nameError) setNameError("");
+            }}
+            error={nameError || undefined}
           />
           <Input
             label={tr.date}
             type="date"
             value={date}
-            onChange={(e) => setDate(e.target.value)}
+            onChange={(e) => {
+              setDate(e.target.value);
+              if (dateError) setDateError("");
+            }}
+            error={dateError || undefined}
           />
           <Input
             label={tr.time}
