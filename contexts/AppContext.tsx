@@ -1,7 +1,7 @@
 "use client";
 
 import React, { createContext, useContext, useCallback, useState, useEffect } from "react";
-import type { LanguageCode, UserRole } from "@/types";
+import type { LanguageCode, UserRole, Participant } from "@/types";
 import type { EmergencyContact, Tour, Message } from "@/types";
 
 const LANGUAGE_KEY = "tourtalk_language";
@@ -11,6 +11,7 @@ const EMERGENCY_KEY = "tourtalk_emergency";
 const TOURS_KEY = "tourtalk_my_tours";
 const GUIDE_TOURS_KEY = "tourtalk_guide_tours";
 const TOUR_MESSAGES_KEY = "tourtalk_tour_messages";
+const TOUR_PARTICIPANTS_KEY = "tourtalk_tour_participants";
 const COMPLETED_ONBOARDING = "tourtalk_onboarding_done";
 
 type AppState = {
@@ -28,6 +29,8 @@ type AppState = {
   addGuideTour: (tour: Tour) => void;
   tourMessages: Record<string, Message[]>;
   addTourMessage: (tourId: string, message: Message) => void;
+  tourParticipants: Record<string, Participant[]>;
+  addTourParticipant: (tourId: string, participant: Participant) => void;
   onboardingDone: boolean;
   setOnboardingDone: (done: boolean) => void;
   logout: () => void;
@@ -65,6 +68,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const [myTourIds, setMyTourIds] = useState<string[]>([]);
   const [guideTours, setGuideTours] = useState<Tour[]>([]);
   const [tourMessages, setTourMessages] = useState<Record<string, Message[]>>({});
+  const [tourParticipants, setTourParticipants] = useState<Record<string, Participant[]>>({});
   const [onboardingDone, setOnboardingDoneState] = useState(false);
 
   useEffect(() => {
@@ -75,6 +79,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     setMyTourIds(loadStorage<string[]>(TOURS_KEY, []));
     setGuideTours(loadStorage<Tour[]>(GUIDE_TOURS_KEY, []));
     setTourMessages(loadStorage<Record<string, Message[]>>(TOUR_MESSAGES_KEY, {}));
+    setTourParticipants(loadStorage<Record<string, Participant[]>>(TOUR_PARTICIPANTS_KEY, {}));
     setOnboardingDoneState(loadStorage(COMPLETED_ONBOARDING, false));
   }, []);
 
@@ -125,6 +130,19 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     });
   }, []);
 
+  const addTourParticipant = useCallback((tourId: string, participant: Participant) => {
+    setTourParticipants((prev) => {
+      const list = prev[tourId] ?? [];
+      // 중복 체크: 이미 같은 이메일의 참여자가 있으면 추가하지 않음
+      if (list.some((p) => p.email === participant.email)) {
+        return prev;
+      }
+      const next = { ...prev, [tourId]: [...list, participant] };
+      saveStorage(TOUR_PARTICIPANTS_KEY, next);
+      return next;
+    });
+  }, []);
+
   const setOnboardingDone = useCallback((done: boolean) => {
     setOnboardingDoneState(done);
     saveStorage(COMPLETED_ONBOARDING, done);
@@ -140,6 +158,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       localStorage.removeItem(TOURS_KEY);
       localStorage.removeItem(GUIDE_TOURS_KEY);
       localStorage.removeItem(TOUR_MESSAGES_KEY);
+      localStorage.removeItem(TOUR_PARTICIPANTS_KEY);
       localStorage.removeItem(COMPLETED_ONBOARDING);
     }
 
@@ -151,6 +170,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     setMyTourIds([]);
     setGuideTours([]);
     setTourMessages({});
+    setTourParticipants({});
     setOnboardingDoneState(false);
   }, []);
 
@@ -169,6 +189,8 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     addGuideTour,
     tourMessages,
     addTourMessage,
+    tourParticipants,
+    addTourParticipant,
     onboardingDone,
     setOnboardingDone,
     logout,

@@ -333,6 +333,22 @@ export const fakeParticipants: Participant[] = [
   { id: "p28", name: "陳大文", email: "zt1@zh.com", language: "zh-TW", languageName: "繁體中文", flag: "🇹🇼", isOnline: true, joinedAt: "" },
   { id: "p29", name: "林小美", email: "zt2@zh.com", language: "zh-TW", languageName: "繁體中文", flag: "🇹🇼", isOnline: true, joinedAt: "" },
   { id: "p30", name: "佐藤太郎", email: "ja@jp.com", language: "ja", languageName: "日本語", flag: "🇯🇵", isOnline: true, joinedAt: "" },
+  { id: "p31", name: "Kevin Park", email: "k@v.com", language: "en", languageName: "English", flag: "🇺🇸", isOnline: true, joinedAt: "" },
+  { id: "p32", name: "Linda Chen", email: "l@v.com", language: "zh-CN", languageName: "简体中文", flag: "🇨🇳", isOnline: true, joinedAt: "" },
+  { id: "p33", name: "Mark Johnson", email: "m@v.com", language: "en", languageName: "English", flag: "🇺🇸", isOnline: false, joinedAt: "" },
+  { id: "p34", name: "Nina Petrova", email: "n@v.com", language: "en", languageName: "English", flag: "🇷🇺", isOnline: true, joinedAt: "" },
+  { id: "p35", name: "Oscar Martinez", email: "o@v.com", language: "en", languageName: "English", flag: "🇪🇸", isOnline: true, joinedAt: "" },
+  { id: "p36", name: "Patricia Wong", email: "p@v.com", language: "zh-CN", languageName: "简体中文", flag: "🇨🇳", isOnline: true, joinedAt: "" },
+  { id: "p37", name: "Quang Nguyen", email: "q@v.com", language: "vi", languageName: "베트남어", flag: "🇻🇳", isOnline: true, joinedAt: "" },
+  { id: "p38", name: "Rachel Kim", email: "r@v.com", language: "ko", languageName: "한국어", flag: "🇰🇷", isOnline: false, joinedAt: "" },
+  { id: "p39", name: "Somchai Prasert", email: "s@v.com", language: "th", languageName: "ภาษาไทย", flag: "🇹🇭", isOnline: true, joinedAt: "" },
+  { id: "p40", name: "Tanaka Yuki", email: "t@v.com", language: "ja", languageName: "日本語", flag: "🇯🇵", isOnline: true, joinedAt: "" },
+  { id: "p41", name: "Umar Hassan", email: "u@v.com", language: "id", languageName: "Bahasa Indonesia", flag: "🇮🇩", isOnline: true, joinedAt: "" },
+  { id: "p42", name: "Victoria Li", email: "v@v.com", language: "zh-TW", languageName: "繁體中文", flag: "🇹🇼", isOnline: true, joinedAt: "" },
+  { id: "p43", name: "William Zhang", email: "w@v.com", language: "en", languageName: "English", flag: "🇺🇸", isOnline: false, joinedAt: "" },
+  { id: "p44", name: "Xiao Ming", email: "x@v.com", language: "zh-CN", languageName: "简体中文", flag: "🇨🇳", isOnline: true, joinedAt: "" },
+  { id: "p45", name: "Yuki Yamamoto", email: "y@v.com", language: "ja", languageName: "日本語", flag: "🇯🇵", isOnline: true, joinedAt: "" },
+  { id: "p46", name: "Zara Ahmed", email: "z@v.com", language: "en", languageName: "English", flag: "🇦🇪", isOnline: true, joinedAt: "" },
 ];
 
 /** 투어별 실제 참여자 목록 (표시 인원수와 참여자 탭/통계 일치용) */

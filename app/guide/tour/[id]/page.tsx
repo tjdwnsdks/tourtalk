@@ -4,9 +4,9 @@ import { useParams, useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import toast from "react-hot-toast";
-import { Mic, Users, MessageSquare, BarChart3, Circle } from "lucide-react";
+import { Mic, Users, MessageSquare, BarChart3, Circle, Search } from "lucide-react";
 import { useApp } from "@/contexts/AppContext";
-import { fakeTours, getParticipantsForTour, guideQuickMessages, fakeTranslate, getTourName } from "@/lib/mockData";
+import { fakeTours, getParticipantsForTour, guideQuickMessages, fakeTranslate, getTourName, fakeParticipants } from "@/lib/mockData";
 import { getRelativeTime } from "@/lib/utils";
 import type { Message } from "@/types";
 import type { LanguageCode } from "@/types";
@@ -77,7 +77,7 @@ export default function GuideTourManagePage() {
   const params = useParams();
   const router = useRouter();
   const id = params.id as string;
-  const { language, tourMessages, addTourMessage, guideTours } = useApp();
+  const { language, tourMessages, addTourMessage, guideTours, tourParticipants, addTourParticipant } = useApp();
   const tr = t(language).tourManage;
   const common = t(language).common;
   const touristTr = t(language).tourist;
@@ -89,11 +89,19 @@ export default function GuideTourManagePage() {
   const [playingDots, setPlayingDots] = useState(1);
   const [showRecordingPopup, setShowRecordingPopup] = useState(false);
   const [recordingDots, setRecordingDots] = useState(1);
+  // 참여자 초대 관련 상태
+  const [showInviteForm, setShowInviteForm] = useState(false);
+  const [searchEmail, setSearchEmail] = useState("");
+  const [searchEmailError, setSearchEmailError] = useState("");
+  const [searchResult, setSearchResult] = useState<{ id: string; name: string; email: string; isMember: boolean } | null>(null);
 
   const allTours = [...guideTours, ...fakeTours];
   const tour = allTours.find((t) => t.id === id);
   const messages = (tourMessages[id] ?? []) as Message[];
-  const participantsForTour = getParticipantsForTour(id);
+  // Mock 데이터의 참여자와 동적으로 추가된 참여자를 합침
+  const mockParticipants = getParticipantsForTour(id);
+  const addedParticipants = tourParticipants[id] ?? [];
+  const participantsForTour = [...mockParticipants, ...addedParticipants];
 
   const byLang = participantsForTour.reduce<Record<string, typeof participantsForTour>>((acc, p) => {
     const lang = p.language;
@@ -103,6 +111,70 @@ export default function GuideTourManagePage() {
   }, {});
 
   const onlineCount = participantsForTour.filter((p) => p.isOnline).length;
+
+  // 이메일 유효성 검사
+  const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  const isValidEmail = (value: string): boolean => {
+    return EMAIL_REGEX.test(value.trim());
+  };
+
+  // 회원 검색 핸들러
+  const handleSearchParticipant = () => {
+    const normalized = searchEmail.trim().toLowerCase();
+    if (!normalized) {
+      setSearchResult(null);
+      setSearchEmailError("");
+      return;
+    }
+    if (!isValidEmail(searchEmail)) {
+      setSearchEmailError("올바른 이메일 형식을 입력해주세요.");
+      setSearchResult(null);
+      return;
+    }
+    setSearchEmailError("");
+    const matches = fakeParticipants.filter((u) => u.email.toLowerCase() === normalized);
+    if (matches.length > 0) {
+      setSearchResult({
+        id: matches[0].id,
+        name: matches[0].name,
+        email: matches[0].email,
+        isMember: true,
+      });
+    } else {
+      setSearchResult(null);
+      setSearchEmailError("회원을 찾을 수 없습니다.");
+    }
+  };
+
+  // 참여자 초대 핸들러
+  const handleInviteParticipant = (user: { id: string; name: string; email: string; isMember: boolean }) => {
+    // 이미 참여 중인지 확인
+    if (participantsForTour.some((p) => p.email?.toLowerCase() === user.email.toLowerCase())) {
+      setSearchEmailError("이미 참여 중인 회원입니다.");
+      return;
+    }
+
+    // 새 참여자 객체 생성 (기본값 사용)
+    const newParticipant = {
+      id: `invited-${Date.now()}`,
+      name: user.name,
+      email: user.email,
+      language: "ko" as const,
+      languageName: "한국어",
+      flag: "🇰🇷",
+      isOnline: true,
+      joinedAt: new Date().toISOString(),
+      tourId: id,
+    };
+
+    // 투어에 참여자 추가
+    addTourParticipant(id, newParticipant);
+
+    toast.success(`${user.name}님을 초대했습니다.`);
+    setSearchEmail("");
+    setSearchResult(null);
+    setShowInviteForm(false);
+  };
 
   const handleSendMessage = async (text: string) => {
     if (!text.trim() || sending) return;
@@ -373,10 +445,67 @@ export default function GuideTourManagePage() {
             <p className="text-sm text-gray-600 mb-2">
               {tr.totalParticipants} ({participantsForTour.length}/{tour.maxParticipants})
             </p>
-            <div className="flex gap-2 mb-4">
-              <Button variant="outline" size="sm">➕ {tr.inviteParticipants}</Button>
-              <Button variant="outline" size="sm">📋 {tr.exportList}</Button>
-            </div>
+
+            {/* 참여자 초대하기 버튼 */}
+            {!showInviteForm ? (
+              <Button
+                variant="outline"
+                fullWidth
+                className="mb-4"
+                onClick={() => setShowInviteForm(true)}
+              >
+                ➕ {tr.inviteParticipants}
+              </Button>
+            ) : (
+              <Card className="mb-4 space-y-3">
+                <p className="text-sm font-medium text-gray-700">{emergencyTr.searchMember}</p>
+                <div className="flex gap-2">
+                  <Input
+                    placeholder={emergencyTr.searchPlaceholder}
+                    value={searchEmail}
+                    onChange={(e) => {
+                      setSearchEmail(e.target.value);
+                      if (searchEmailError) setSearchEmailError("");
+                    }}
+                    onKeyDown={(e) => e.key === "Enter" && handleSearchParticipant()}
+                    type="email"
+                    error={searchEmailError || undefined}
+                  />
+                  <Button variant="primary" onClick={handleSearchParticipant}>
+                    <Search className="w-4 h-4" />
+                  </Button>
+                </div>
+                {searchResult && (
+                  <Card className="flex items-center justify-between">
+                    <div>
+                      <p className="font-medium">👤 {searchResult.name}</p>
+                      <p className="text-sm text-gray-600">{searchResult.email}</p>
+                      <span className="text-xs">{searchResult.isMember ? `✓ ${emergencyTr.member}` : emergencyTr.nonMember}</span>
+                    </div>
+                    <Button
+                      variant="secondary"
+                      size="sm"
+                      onClick={() => handleInviteParticipant(searchResult)}
+                    >
+                      {tr.invite || "초대"}
+                    </Button>
+                  </Card>
+                )}
+                <div className="flex gap-2">
+                  <Button
+                    variant="ghost"
+                    onClick={() => {
+                      setShowInviteForm(false);
+                      setSearchEmail("");
+                      setSearchResult(null);
+                      setSearchEmailError("");
+                    }}
+                  >
+                    {emergencyTr.cancel}
+                  </Button>
+                </div>
+              </Card>
+            )}
             <p className="text-sm font-medium text-gray-700 mb-2">─── {tr.byLanguage} ───</p>
             <div className="space-y-4">
               {Object.entries(byLang).map(([lang, list]) => (
